@@ -4,5 +4,4 @@ bin/
 .project
 .classpath
 *.war
-dados.ser
-dados.ser.tmp
+dados.ser*

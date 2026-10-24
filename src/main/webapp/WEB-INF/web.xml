@@ -6,4 +6,59 @@
 
   <display-name>AgroGest</display-name>
 
+  <!--
+    Servlets, filtros e o listener estão declarados por anotação
+    (@WebServlet, @WebFilter, @WebListener). Aqui fica só a configuração geral.
+
+    Local do ficheiro de dados: por omissão ${catalina.base}/data/agrogest/dados.ser.
+    Para mudar, descomentar e ajustar (ou usar -Dagrogest.dados=... no arranque):
+  -->
+  <!--
+  <context-param>
+    <param-name>agrogest.dados</param-name>
+    <param-value>/opt/tomcat/data/agrogest/dados.ser</param-value>
+  </context-param>
+  -->
+
+  <request-character-encoding>UTF-8</request-character-encoding>
+  <response-character-encoding>UTF-8</response-character-encoding>
+
+  <session-config>
+    <session-timeout>30</session-timeout>
+    <cookie-config>
+      <http-only>true</http-only>
+    </cookie-config>
+    <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
+
+  <jsp-config>
+    <jsp-property-group>
+      <url-pattern>*.jsp</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+      <include-prelude>/WEB-INF/jsp/comum/prelude.jspf</include-prelude>
+    </jsp-property-group>
+    <!-- Os fragmentos incluídos (.jspf) também são UTF-8; sem isto o Tomcat lê-os em ISO-8859-1 -->
+    <jsp-property-group>
+      <url-pattern>*.jspf</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+  </jsp-config>
+
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/jsp/erro/403.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/jsp/erro/404.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/jsp/erro/500.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/WEB-INF/jsp/erro/500.jsp</location>
+  </error-page>
+
 </web-app>

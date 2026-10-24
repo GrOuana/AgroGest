@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_0.xsd"
+        version="3.0">
+
+  <description>Funções de formatação do AgroGest para EL</description>
+  <tlib-version>1.0</tlib-version>
+  <short-name>f</short-name>
+  <uri>http://agrogest.co.mz/funcoes</uri>
+
+  <function>
+    <name>mt</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String mt(java.math.BigDecimal)</function-signature>
+  </function>
+  <function>
+    <name>numero</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String numero(java.math.BigDecimal)</function-signature>
+  </function>
+  <function>
+    <name>data</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String data(java.time.LocalDate)</function-signature>
+  </function>
+  <function>
+    <name>dataHora</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String dataHora(java.time.LocalDateTime)</function-signature>
+  </function>
+  <function>
+    <name>iso</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String iso(java.time.LocalDate)</function-signature>
+  </function>
+  <function>
+    <name>foto</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String foto(java.lang.String, java.lang.String)</function-signature>
+  </function>
+</taglib>

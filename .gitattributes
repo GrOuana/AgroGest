@@ -1,0 +1,16 @@
+# Ficheiros de texto normalizados para LF no repositório
+* text=auto
+
+# Scripts e unidades Linux têm de ficar com LF também no Windows
+*.sh      text eol=lf
+*.service text eol=lf
+
+# Scripts do Windows com CRLF
+*.ps1     text eol=crlf
+*.bat     text eol=crlf
+
+# Binários
+*.png binary
+*.pdf binary
+*.war binary
+*.ser binary

@@ -1,0 +1,73 @@
+<%-- Cabeçalho comum. Antes de incluir, a página define ${titulo} e ${menu}. --%>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><c:out value="${titulo}"/> · AgroGest</title>
+  <link rel="icon" href="${ctx}/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="${ctx}/css/estilo.css">
+</head>
+<body>
+<c:set var="u" value="${sessionScope.utilizador}"/>
+<header class="topo">
+  <div class="topo-conteudo">
+    <a class="marca" href="${ctx}/">
+      <img src="${ctx}/img/logo.svg" alt="" width="32" height="32">
+      <span>AgroGest</span>
+    </a>
+
+    <input type="checkbox" id="menu-abrir" class="menu-abrir" aria-label="Abrir menu">
+    <label for="menu-abrir" class="menu-botao" aria-hidden="true"><span></span><span></span><span></span></label>
+
+    <nav class="menu ${u.admin ? 'menu-admin' : ''}">
+      <c:choose>
+        <c:when test="${u.admin}">
+          <a href="${ctx}/admin/dashboard" class="${menu == 'painel' ? 'activo' : ''}">Painel</a>
+          <a href="${ctx}/admin/fornecedores" class="${menu == 'fornecedores' ? 'activo' : ''}">Fornecedores</a>
+          <a href="${ctx}/admin/produtos" class="${menu == 'produtos' ? 'activo' : ''}">Produtos</a>
+          <a href="${ctx}/admin/campanhas" class="${menu == 'campanhas' ? 'activo' : ''}">Campanhas</a>
+          <a href="${ctx}/admin/cultivos" class="${menu == 'cultivos' ? 'activo' : ''}">Cultivos</a>
+          <a href="${ctx}/admin/colheitas" class="${menu == 'colheitas' ? 'activo' : ''}">Colheitas</a>
+          <a href="${ctx}/admin/listagens" class="${menu == 'listagens' ? 'activo' : ''}">Listagens</a>
+          <a href="${ctx}/admin/compras" class="${menu == 'compras' ? 'activo' : ''}">Compras</a>
+          <a href="${ctx}/admin/relatorios" class="${menu == 'relatorios' ? 'activo' : ''}">Relatórios</a>
+          <a href="${ctx}/admin/persistencia" class="${menu == 'persistencia' ? 'activo' : ''}">Persistência</a>
+        </c:when>
+        <c:when test="${u.cliente}">
+          <a href="${ctx}/catalogo" class="${menu == 'catalogo' ? 'activo' : ''}">Catálogo</a>
+          <a href="${ctx}/carrinho" class="${menu == 'carrinho' ? 'activo' : ''}">Carrinho
+            <c:if test="${sessionScope.carrinho != null && sessionScope.carrinho.numeroLinhas > 0}">
+              <span class="contador">${sessionScope.carrinho.numeroLinhas}</span>
+            </c:if>
+          </a>
+          <a href="${ctx}/minhas-compras" class="${menu == 'minhas' ? 'activo' : ''}">Minhas compras</a>
+        </c:when>
+        <c:otherwise>
+          <a href="${ctx}/login" class="${menu == 'login' ? 'activo' : ''}">Entrar</a>
+          <a href="${ctx}/registo" class="${menu == 'registo' ? 'activo' : ''}">Criar conta</a>
+        </c:otherwise>
+      </c:choose>
+
+      <c:if test="${u != null}">
+        <span class="quem" title="${fn:escapeXml(u.email)} · ${u.perfil.descricao}"><c:out value="${u.nome}"/></span>
+        <form method="post" action="${ctx}/logout" class="form-sair">
+          <button type="submit" class="botao-sair">Sair</button>
+        </form>
+      </c:if>
+    </nav>
+  </div>
+</header>
+
+<main class="conteudo">
+  <c:if test="${not empty sessionScope.flash}">
+    <div class="aviso aviso-ok" role="status"><c:out value="${sessionScope.flash}"/></div>
+    <c:remove var="flash" scope="session"/>
+  </c:if>
+  <c:if test="${not empty sessionScope.flashErro}">
+    <div class="aviso aviso-erro" role="alert"><c:out value="${sessionScope.flashErro}"/></div>
+    <c:remove var="flashErro" scope="session"/>
+  </c:if>
+  <c:if test="${not empty erro}">
+    <div class="aviso aviso-erro" role="alert"><c:out value="${erro}"/></div>
+  </c:if>

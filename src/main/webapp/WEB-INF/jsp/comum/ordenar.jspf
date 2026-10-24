@@ -1,0 +1,6 @@
+<%-- Cabeçalho de coluna ordenável. Antes de incluir: ${baseOrdenar} (URL terminado em ? ou &amp;),
+     ${col} (valor de ordem), ${rotulo} e ${classeCol}. A ordenação é feita no servidor. --%>
+<th class="${classeCol}">
+  <a class="ordenar ${ordem == col ? 'ordenado' : ''}"
+     href="${ctx}${baseOrdenar}ordem=${col}&amp;dir=${ordem == col && dir == 'asc' ? 'desc' : 'asc'}">${rotulo}<c:if test="${ordem == col}"> <span aria-hidden="true">${dir == 'asc' ? '▲' : '▼'}</span></c:if></a>
+</th>

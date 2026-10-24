@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#e7f0fb"/>
+  <ellipse cx="200" cy="270" rx="130" ry="16" fill="#cfdcee"/>
+  <path d="M120 70c0-14 10-24 24-24h112c14 0 24 10 24 24l12 180c1 12-8 20-20 20H128c-12 0-21-8-20-20z" fill="#ffffff" stroke="#9fb6d3" stroke-width="4"/>
+  <path d="M136 46c16 10 112 10 128 0" stroke="#9fb6d3" stroke-width="4" fill="none"/>
+  <rect x="138" y="110" width="124" height="70" rx="8" fill="#1d4f8a"/>
+  <text x="200" y="145" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#fff" text-anchor="middle">NPK</text>
+  <text x="200" y="170" font-family="Arial, sans-serif" font-size="16" fill="#cfe0f5" text-anchor="middle">12-24-12</text>
+  <text x="200" y="222" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#1d4f8a" text-anchor="middle">50 kg</text>
+  <path d="M190 88c0-10 10-18 10-18s10 8 10 18-10 14-10 14-10-4-10-14z" fill="#3c8432"/>
+</svg>

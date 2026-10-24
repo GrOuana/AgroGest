@@ -1,0 +1,35 @@
+# /etc/systemd/system/tomcat.service — Apache Tomcat 10.1 a servir o AgroGest na porta 8081.
+#
+# Instalação:  sudo cp deploy/tomcat.service /etc/systemd/system/
+#              sudo systemctl daemon-reload && sudo systemctl enable --now tomcat
+#
+# Type=forking com CATALINA_PID: o systemd sabe qual é o processo do Tomcat e,
+# em "systemctl stop/restart", pára-o de forma limpa com shutdown.sh. É essa
+# paragem limpa que dispara o contextDestroyed do AppListener e grava dados.ser.
+
+[Unit]
+Description=Apache Tomcat 10.1 - AgroGest
+After=network.target
+
+[Service]
+Type=forking
+User=tomcat
+Group=tomcat
+
+Environment=JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment='CATALINA_OPTS=-Xms256m -Xmx512m -Dagrogest.dados=/opt/tomcat/data/agrogest/dados.ser'
+
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh 20 -force
+PIDFile=/opt/tomcat/temp/tomcat.pid
+TimeoutStopSec=40
+SuccessExitStatus=143
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

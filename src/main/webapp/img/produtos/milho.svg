@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#fdf3d8"/>
+  <ellipse cx="200" cy="268" rx="150" ry="18" fill="#efdcae"/>
+  <g transform="rotate(-18 200 150)">
+    <path d="M200 40c38 0 52 60 52 110s-14 110-52 110-52-60-52-110 14-110 52-110z" fill="#f2c335"/>
+    <g fill="#e0a91c">
+      <circle cx="182" cy="80" r="9"/><circle cx="200" cy="74" r="9"/><circle cx="218" cy="80" r="9"/>
+      <circle cx="174" cy="104" r="9"/><circle cx="192" cy="100" r="9"/><circle cx="210" cy="100" r="9"/><circle cx="228" cy="104" r="9"/>
+      <circle cx="172" cy="130" r="9"/><circle cx="190" cy="126" r="9"/><circle cx="208" cy="126" r="9"/><circle cx="226" cy="130" r="9"/>
+      <circle cx="172" cy="156" r="9"/><circle cx="190" cy="152" r="9"/><circle cx="208" cy="152" r="9"/><circle cx="226" cy="156" r="9"/>
+      <circle cx="174" cy="182" r="9"/><circle cx="192" cy="178" r="9"/><circle cx="210" cy="178" r="9"/><circle cx="228" cy="182" r="9"/>
+      <circle cx="182" cy="206" r="9"/><circle cx="200" cy="204" r="9"/><circle cx="218" cy="206" r="9"/>
+    </g>
+    <path d="M200 270c-30-30-70-50-90-120 40 20 70 50 90 120z" fill="#4c9a3f"/>
+    <path d="M200 270c30-30 70-50 90-120-40 20-70 50-90 120z" fill="#3c8432"/>
+  </g>
+</svg>
