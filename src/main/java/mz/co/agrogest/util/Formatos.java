@@ -51,6 +51,17 @@ public final class Formatos {
         return data == null ? "" : DATA_HORA.format(data);
     }
 
+    /** 841234567 → "+258 84 123 4567"; outros formatos (dados antigos) ficam como estão. */
+    public static String telefone(String numero) {
+        if (numero == null) {
+            return "";
+        }
+        if (numero.matches("^8[2-7]\\d{7}$")) {
+            return "+258 " + numero.substring(0, 2) + " " + numero.substring(2, 5) + " " + numero.substring(5);
+        }
+        return numero;
+    }
+
     /** Valor para um <input type="date">. */
     public static String iso(LocalDate data) {
         return data == null ? "" : ISO.format(data);

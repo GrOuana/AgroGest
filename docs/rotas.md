@@ -11,7 +11,7 @@ Perfis: **público** = sem sessão · **sessão** = qualquer utilizador autentic
 | `/` | GET | `HomeServlet` | — (redirect para login, painel ou catálogo) | público | — |
 | `/login` | GET, POST | `LoginServlet` | `login.jsp` | público | `erro` |
 | `/logout` | POST (GET também) | `LogoutServlet` | — (redirect para `/login`) | público | — |
-| `/registo` | GET, POST | `RegistoServlet` | `registo.jsp` | público | `erro` |
+| `/registo` | GET, POST | `RegistoServlet` | `registo-cliente.jsp` | público | `erro`, `erroCampo` |
 | `/catalogo?categoria=SEMENTE` | GET | `CatalogoServlet` | `cliente/catalogo.jsp` | sessão | `produtos`, `categorias`, `categoriaActual`, `noCarrinho` |
 | `/carrinho` | GET | `CarrinhoServlet` | `cliente/carrinho.jsp` | cliente | `resumo` (`ResumoCarrinho`) |
 | `/carrinho/adicionar` | POST `produtoId`, `quantidade`, `categoria` | `CarrinhoServlet` | — (redirect para o catálogo) | cliente | — |
@@ -56,6 +56,13 @@ Perfis: **público** = sem sessão · **sessão** = qualquer utilizador autentic
 | 403 | `erro/403.jsp` — sem permissão (sem sessão em `/admin/*`, cliente em `/admin/*`, admin no carrinho, factura de outro cliente) |
 | 404 | `erro/404.jsp` |
 | 500 / excepção | `erro/500.jsp` (o detalhe fica no log do Tomcat) |
+
+## Atributos de pedido comuns
+
+| Nome | Tipo | Significado |
+|---|---|---|
+| `erro` | `String` | Mensagem de validação ou regra de negócio, mostrada no topo da página |
+| `erroCampo` | `String` | Nome do campo que falhou (ex.: `telefone`). A JSP marca-o com `aria-invalid` e mostra a mensagem junto dele |
 
 ## Atributos de sessão
 

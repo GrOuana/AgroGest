@@ -69,7 +69,7 @@
   <li>O administrador vai para o <em>Painel</em> e o cliente para o <em>Catálogo</em>.</li>
 </ol>
 <figure class="meia"><img src="../img/01-login.png" alt=""><figcaption>Figura 1 — Página de entrada</figcaption></figure>
-<p>Para terminar a sessão, use o botão <strong>Sair</strong> no canto superior direito.</p>
+<p>Para terminar a sessão, use o botão <strong>Sair</strong>: no administrador está no fundo da barra lateral, no cliente no canto superior direito.</p>
 
 <!-- ================================================================== -->
 <h2 class="quebra">2. Administrador</h2>
@@ -81,7 +81,7 @@
 <h3>2.2 Criar um fornecedor</h3>
 <ol>
   <li>No menu, abra <strong>Fornecedores</strong>.</li>
-  <li>Em <em>Novo fornecedor</em>, preencha o nome (<code>Sementes do Sul, Lda</code>), o tipo (<code>Sementes</code>), o contacto e a província (<code>Maputo</code>).</li>
+  <li>Em <em>Novo fornecedor</em>, preencha o nome (<code>Sementes do Sul, Lda</code>), o tipo (<code>Sementes</code>), o contacto (telefone de 9 dígitos, por exemplo <code>845551234</code>) e a província (<code>Maputo</code>). O nome não pode ter números.</li>
   <li>Carregue em <strong>Criar fornecedor</strong>. Aparece a confirmação a verde e o fornecedor passa a constar da tabela.</li>
 </ol>
 <figure><img src="../img/03-admin-fornecedores.png" alt=""><figcaption>Figura 3 — Fornecedor criado</figcaption></figure>
@@ -177,15 +177,23 @@
 <h3>3.1 Criar conta</h3>
 <ol>
   <li>Na página de entrada, carregue em <strong>Registe-se como cliente</strong> ou em <strong>Criar conta</strong> no menu.</li>
-  <li>Preencha o nome (<code>João Silva</code>), o email (<code>joao@teste.mz</code>), a palavra-passe (<code>1234</code>, com pelo menos 4 caracteres) e a confirmação, o telefone e o endereço (<code>Av. Eduardo Mondlane, Nampula</code>).</li>
+  <li>Preencha os campos:
+    <ul>
+      <li>nome: <code>João Silva</code> (só letras);</li>
+      <li>email: <code>joao@teste.mz</code>;</li>
+      <li>palavra-passe e confirmação: <code>1234</code> (pelo menos 4 caracteres);</li>
+      <li>telefone: <code>847654321</code> (9 dígitos a começar por 82 a 87, sem +258);</li>
+      <li>endereço: <code>Av. Eduardo Mondlane, Nampula</code>.</li>
+    </ul></li>
   <li>Carregue em <strong>Criar conta</strong>. A sessão abre logo, no catálogo.</li>
 </ol>
 <figure class="meia"><img src="../img/20-cliente-registo.png" alt=""><figcaption>Figura 15 — Registo de cliente</figcaption></figure>
-<div class="regra">O email é único. Uma segunda conta com o mesmo email é recusada com a mensagem «Já existe uma conta com o email …».</div>
+<div class="regra">Os campos são validados no browser e outra vez no servidor. Se um valor não cumprir as regras, por exemplo um telefone começado por 88, um nome com números ou um email já registado, a página volta com o aviso no topo e o campo assinalado a vermelho, com a explicação junto dele. O que já foi escrito mantém-se.</div>
+<figure class="meia"><img src="../img/20b-cliente-registo-erro.png" alt=""><figcaption>Figura 16 — Telefone inválido assinalado pelo servidor</figcaption></figure>
 
 <h3>3.2 Consultar o catálogo</h3>
 <p>Cada produto mostra a foto, o nome, a descrição, o preço por unidade, a quantidade disponível, a validade, o fornecedor e a categoria. Os botões <em>Todas</em>, <em>Semente</em>, <em>Fertilizante</em>, <em>Maquinaria</em> e <em>Ferramenta</em> filtram por categoria. Produtos esgotados ou fora da validade aparecem a cinzento e não podem ser comprados.</p>
-<figure><img src="../img/21-cliente-catalogo.png" alt=""><figcaption>Figura 16 — Catálogo do cliente</figcaption></figure>
+<figure><img src="../img/21-cliente-catalogo.png" alt=""><figcaption>Figura 17 — Catálogo do cliente</figcaption></figure>
 
 <h3>3.3 Adicionar ao carrinho</h3>
 <ol>
@@ -193,7 +201,7 @@
   <li>Carregue em <strong>Adicionar</strong>. A confirmação aparece no topo e o número no menu <em>Carrinho</em> aumenta.</li>
   <li>Repita para <code>1</code> saco de Adubo NPK.</li>
 </ol>
-<figure><img src="../img/23-cliente-adicionado.png" alt=""><figcaption>Figura 17 — Produto adicionado ao carrinho</figcaption></figure>
+<figure><img src="../img/23-cliente-adicionado.png" alt=""><figcaption>Figura 18 — Produto adicionado ao carrinho</figcaption></figure>
 
 <h3>3.4 Gerir o carrinho</h3>
 <p>No menu <strong>Carrinho</strong> vê as linhas, os subtotais, o IVA de 16% e o total. Pode:</p>
@@ -203,9 +211,9 @@
   <li>limpar tudo com <strong>Esvaziar carrinho</strong>.</li>
 </ul>
 <p>O carrinho fica guardado na sessão enquanto ela estiver aberta.</p>
-<figure><img src="../img/24-cliente-carrinho.png" alt=""><figcaption>Figura 18 — Carrinho com 3 kg de milho e 1 saco de adubo</figcaption></figure>
+<figure><img src="../img/24-cliente-carrinho.png" alt=""><figcaption>Figura 19 — Carrinho com 3 kg de milho e 1 saco de adubo</figcaption></figure>
 <div class="regra">Se pedir mais do que o stock disponível, o sistema avisa da indisponibilidade e não altera o carrinho:</div>
-<figure><img src="../img/25-cliente-stock-insuficiente.png" alt=""><figcaption>Figura 19 — Aviso de stock insuficiente</figcaption></figure>
+<figure><img src="../img/25-cliente-stock-insuficiente.png" alt=""><figcaption>Figura 20 — Aviso de stock insuficiente</figcaption></figure>
 
 <h3>3.5 Finalizar a compra</h3>
 <ol>
@@ -213,20 +221,20 @@
   <li>Confira os seus dados e o resumo da compra.</li>
   <li>Carregue em <strong>Confirmar compra</strong>. O stock de todos os produtos é descontado e a factura é emitida.</li>
 </ol>
-<figure><img src="../img/26-cliente-confirmar.png" alt=""><figcaption>Figura 20 — Confirmação da compra</figcaption></figure>
+<figure><img src="../img/26-cliente-confirmar.png" alt=""><figcaption>Figura 21 — Confirmação da compra</figcaption></figure>
 <div class="regra">A compra é tudo-ou-nada. Se algum produto deixou de ter stock entretanto (por exemplo, outro cliente comprou a última unidade), a compra é recusada, nenhum stock é descontado e o cliente volta ao carrinho com o aviso.</div>
 
 <h3>3.6 Factura e impressão</h3>
 <p>A factura mostra o número sequencial (<strong>FT-2026-1</strong>), a data, os dados do cliente, os itens, o subtotal, o IVA de 16% e o total.</p>
-<figure><img src="../img/27-cliente-factura.png" alt=""><figcaption>Figura 21 — Factura FT-2026-1: subtotal 2.105,00 MT, IVA 336,80 MT, total 2.441,80 MT</figcaption></figure>
+<figure><img src="../img/27-cliente-factura.png" alt=""><figcaption>Figura 22 — Factura FT-2026-1: subtotal 2.105,00 MT, IVA 336,80 MT, total 2.441,80 MT</figcaption></figure>
 <p>Para imprimir, carregue em <strong>Imprimir factura</strong>. Abre-se a versão de impressão, só com a factura. Aí prima <kbd>Ctrl</kbd>+<kbd>P</kbd> e escolha a impressora ou <em>Guardar como PDF</em>.</p>
-<figure class="meia"><img src="../img/28-cliente-factura-imprimir.png" alt=""><figcaption>Figura 22 — Versão de impressão da factura</figcaption></figure>
+<figure class="meia"><img src="../img/28-cliente-factura-imprimir.png" alt=""><figcaption>Figura 23 — Versão de impressão da factura</figcaption></figure>
 
 <h3>3.7 Minhas compras</h3>
 <p>O menu <strong>Minhas compras</strong> lista todas as compras anteriores do cliente, com o número da factura, a data, os produtos e o total. O botão <strong>Ver factura</strong> abre cada factura.</p>
-<figure><img src="../img/29-cliente-minhas-compras.png" alt=""><figcaption>Figura 23 — Histórico de compras</figcaption></figure>
+<figure><img src="../img/29-cliente-minhas-compras.png" alt=""><figcaption>Figura 24 — Histórico de compras</figcaption></figure>
 <div class="regra">Cada cliente só vê as suas facturas. Se tentar abrir a factura de outro cliente, ou qualquer página de administração, recebe «Acesso negado» (HTTP 403).</div>
-<figure><img src="../img/30-cliente-403.png" alt=""><figcaption>Figura 24 — Cliente a tentar abrir uma página de administração</figcaption></figure>
+<figure><img src="../img/30-cliente-403.png" alt=""><figcaption>Figura 25 — Cliente a tentar abrir uma página de administração</figcaption></figure>
 
 <h3>3.8 No telemóvel</h3>
 <p>A interface adapta-se a ecrãs pequenos. O menu recolhe-se no botão ☰ no canto superior direito.</p>
@@ -235,7 +243,14 @@
   <img src="../img/32-telemovel-menu.png" alt="">
   <img src="../img/33-telemovel-carrinho.png" alt="">
 </figure>
-<p style="text-align:center"><small>Figura 25 — Catálogo, menu e carrinho num telemóvel</small></p>
+<p style="text-align:center"><small>Figura 26 — Catálogo, menu e carrinho num telemóvel</small></p>
+<p>No administrador, a barra lateral passa a ser uma faixa de navegação horizontal no topo, que se desliza com o dedo.</p>
+<figure class="meia"><img src="../img/44-telemovel-admin.png" alt="" style="width:34%"><figcaption>Figura 27 — Painel do administrador num telemóvel</figcaption></figure>
+
+<h3>3.9 Modo escuro</h3>
+<p>Se o sistema operativo ou o browser estiver em modo escuro, o AgroGest muda sozinho para cores escuras, sem nenhuma opção a activar. A versão de impressão da factura sai sempre em fundo branco.</p>
+<figure><img src="../img/42-escuro-admin-painel.png" alt=""><figcaption>Figura 28 — Painel do administrador em modo escuro</figcaption></figure>
+<figure><img src="../img/40-escuro-catalogo.png" alt=""><figcaption>Figura 29 — Catálogo em modo escuro</figcaption></figure>
 
 <!-- ================================================================== -->
 <h2 class="quebra">4. Instalação e operação (resumo)</h2>

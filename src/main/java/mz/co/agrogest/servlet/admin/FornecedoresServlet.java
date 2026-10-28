@@ -42,7 +42,7 @@ public class FornecedoresServlet extends BaseServlet {
             }
             redirect(req, resp, "/admin/fornecedores");
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             doGet(req, resp);
         }
     }

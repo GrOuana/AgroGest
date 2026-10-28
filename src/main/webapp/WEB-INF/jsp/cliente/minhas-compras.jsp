@@ -2,41 +2,58 @@
 <c:set var="menu" value="minhas"/>
 <%@ include file="/WEB-INF/jsp/comum/cabecalho.jspf" %>
 
-<div class="cabecalho-pagina">
-  <h1>Minhas compras</h1>
-  <p class="subtitulo">Histórico de todas as suas compras e respectivas facturas.</p>
-</div>
+<header class="page__header">
+  <div class="page__heading">
+    <h1 class="page__title">Minhas compras</h1>
+    <p class="page__subtitle">Histórico de todas as suas compras e respectivas facturas.</p>
+  </div>
+</header>
 
 <c:choose>
   <c:when test="${empty vendas}">
-    <section class="cartao vazio-cartao">
-      <p>Ainda não fez nenhuma compra.</p>
-      <a class="botao botao-primario" href="${ctx}/catalogo">Ver catálogo</a>
+    <section class="card card--empty">
+      <p class="empty-state">Ainda não fez nenhuma compra.</p>
+      <a class="btn btn--primary" href="${ctx}/catalogo">Ver catálogo</a>
     </section>
   </c:when>
   <c:otherwise>
-    <div class="tabela-envolvente">
-      <table class="tabela">
-        <thead>
-          <tr><th>Factura</th><th>Data</th><th>Produtos</th><th class="num">Total</th><th></th></tr>
-        </thead>
-        <tbody>
-          <c:forEach var="v" items="${vendas}">
+    <section class="card" aria-labelledby="historico-titulo">
+      <header class="card__header">
+        <h2 class="card__title" id="historico-titulo">Facturas <span class="card__title-meta">(${fn:length(vendas)})</span></h2>
+      </header>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
             <tr>
-              <td><strong><c:out value="${v.numeroFactura}"/></strong></td>
-              <td>${f:dataHora(v.data)}</td>
-              <td>
-                <c:forEach var="i" items="${v.itens}" varStatus="s">
-                  <c:out value="${i.produtoNome}"/> (${i.quantidade})<c:if test="${!s.last}">, </c:if>
-                </c:forEach>
-              </td>
-              <td class="num">${f:mt(v.total)}</td>
-              <td><a class="botao botao-pequeno" href="${ctx}/factura?id=${v.id}">Ver factura</a></td>
+              <th scope="col" class="table__th">Factura</th>
+              <th scope="col" class="table__th">Data</th>
+              <th scope="col" class="table__th">Produtos</th>
+              <th scope="col" class="table__th table__th--num">Total</th>
+              <th scope="col" class="table__th"><span class="visually-hidden">Acções</span></th>
             </tr>
-          </c:forEach>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            <c:forEach var="v" items="${vendas}">
+              <tr class="table__row">
+                <th scope="row" class="table__td table__td--nowrap"><span class="table__strong"><c:out value="${v.numeroFactura}"/></span></th>
+                <td class="table__td table__td--nowrap">${f:dataHora(v.data)}</td>
+                <td class="table__td">
+                  <c:forEach var="i" items="${v.itens}" varStatus="s">
+                    <c:out value="${i.produtoNome}"/> (${i.quantidade})<c:if test="${!s.last}">, </c:if>
+                  </c:forEach>
+                </td>
+                <td class="table__td table__td--num">${f:mt(v.total)}</td>
+                <td class="table__td table__td--nowrap">
+                  <a class="btn btn--secondary btn--sm" href="${ctx}/factura?id=${v.id}">
+                    Ver factura<span class="visually-hidden"> <c:out value="${v.numeroFactura}"/></span>
+                  </a>
+                </td>
+              </tr>
+            </c:forEach>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </c:otherwise>
 </c:choose>
 

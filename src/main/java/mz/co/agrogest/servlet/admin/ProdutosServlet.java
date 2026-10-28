@@ -76,7 +76,7 @@ public class ProdutosServlet extends BaseServlet {
             }
             redirect(req, resp, "/admin/produtos");
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             Integer id = inteiroOpcional(req, "id");
             if ("actualizar".equals(accao) && id != null) {
                 // Voltar ao formulário de edição com os valores que o utilizador escreveu

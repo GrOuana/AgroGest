@@ -38,11 +38,11 @@ public class ProducaoService {
     }
 
     public Campanha criarCampanha(String nome, LocalDate inicio, LocalDate fim) {
-        String n = Validar.obrigatorio(nome, "Nome");
-        Validar.presente(inicio, "Data de início");
-        Validar.presente(fim, "Data de fim");
+        String n = Validar.obrigatorio(nome, "Nome", "nome", 120);
+        Validar.presente(inicio, "Data de início", "inicio");
+        Validar.presente(fim, "Data de fim", "fim");
         if (fim.isBefore(inicio)) {
-            throw new RegraNegocioException("A data de fim não pode ser anterior à data de início.");
+            throw new RegraNegocioException("A data de fim não pode ser anterior à data de início.", "fim");
         }
         return store.adicionarCampanha(new Campanha(n, inicio, fim));
     }
@@ -89,10 +89,10 @@ public class ProducaoService {
 
     public Cultivo registarCultivo(int campanhaId, String cultura, String variedade, BigDecimal hectares,
                                    LocalDate plantio) {
-        String c = Validar.obrigatorio(cultura, "Cultura");
-        String v = Validar.obrigatorio(variedade, "Variedade");
-        Validar.positivo(hectares, "Hectares");
-        Validar.presente(plantio, "Data de plantio");
+        String c = Validar.nomeEntidade(Validar.obrigatorio(cultura, "Cultura", "cultura", 80), "Cultura", "cultura");
+        String v = Validar.obrigatorio(variedade, "Variedade", "variedade", 80);
+        Validar.positivo(hectares, "Hectares", "hectares");
+        Validar.presente(plantio, "Data de plantio", "plantio");
         synchronized (store.lockCultivos()) {
             Campanha campanha = campanhaExistente(campanhaId);
             if (campanha.isFechada()) {
@@ -100,7 +100,7 @@ public class ProducaoService {
                         + "» está fechada. Reabra-a para registar cultivos.");
             }
             if (!campanha.contem(plantio)) {
-                throw new RegraNegocioException("A data de plantio tem de estar dentro do período da campanha.");
+                throw new RegraNegocioException("A data de plantio tem de estar dentro do período da campanha.", "plantio");
             }
             return store.adicionarCultivo(new Cultivo(campanhaId, c, v, hectares, plantio));
         }
@@ -131,9 +131,9 @@ public class ProducaoService {
     }
 
     public Colheita registarColheita(int cultivoId, LocalDate data, BigDecimal kg, BigDecimal precoKg) {
-        Validar.presente(data, "Data");
-        Validar.positivo(kg, "Quantidade (kg)");
-        Validar.positivo(precoKg, "Preço por kg");
+        Validar.presente(data, "Data", "data");
+        Validar.positivo(kg, "Quantidade (kg)", "kg");
+        Validar.dinheiro(precoKg, "Preço por kg", "precoKg");
         synchronized (store.lockColheitas()) {
             Cultivo cultivo = cultivoExistente(cultivoId);
             Campanha campanha = campanhaExistente(cultivo.getCampanhaId());
@@ -143,7 +143,7 @@ public class ProducaoService {
             }
             if (data.isBefore(cultivo.getPlantio())) {
                 throw new RegraNegocioException("A colheita não pode ser anterior à data de plantio ("
-                        + Formatos.data(cultivo.getPlantio()) + ").");
+                        + Formatos.data(cultivo.getPlantio()) + ").", "data");
             }
             Colheita c = new Colheita();
             c.setCultivoId(cultivoId);

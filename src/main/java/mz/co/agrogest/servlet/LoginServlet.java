@@ -45,7 +45,7 @@ public class LoginServlet extends BaseServlet {
                 redirect(req, resp, "/catalogo");
             }
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             vista(req, resp, "login");
         }
     }

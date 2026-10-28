@@ -1,73 +1,163 @@
-<%-- Cabeçalho comum. Antes de incluir, a página define ${titulo} e ${menu}. --%>
+<%-- Cabeçalho comum. Antes de incluir, a página define ${titulo} e ${menu}.
+     Administrador: grelha .app com barra lateral. Cliente e visitante: .topbar. --%>
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title><c:out value="${titulo}"/> · AgroGest</title>
   <link rel="icon" href="${ctx}/img/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="${ctx}/css/estilo.css">
+  <link rel="preload" href="${ctx}/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="${ctx}/css/global.css">
 </head>
 <body>
+<a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
 <c:set var="u" value="${sessionScope.utilizador}"/>
-<header class="topo">
-  <div class="topo-conteudo">
-    <a class="marca" href="${ctx}/">
-      <img src="${ctx}/img/logo.svg" alt="" width="32" height="32">
+
+<c:choose>
+  <c:when test="${u.admin}">
+<div class="app">
+  <aside class="app__sidebar sidebar" aria-label="Administração">
+    <a class="sidebar__brand" href="${ctx}/admin/dashboard">
+      <img class="sidebar__logo" src="${ctx}/img/logo.svg" alt="" width="32" height="32">
       <span>AgroGest</span>
     </a>
 
-    <input type="checkbox" id="menu-abrir" class="menu-abrir" aria-label="Abrir menu">
-    <label for="menu-abrir" class="menu-botao" aria-hidden="true"><span></span><span></span><span></span></label>
+    <nav class="sidebar__nav" aria-label="Menu de administração">
+      <p class="sidebar__group-label">Geral</p>
+      <a class="sidebar__link ${menu == 'painel' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/dashboard" ${menu == 'painel' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        Painel
+      </a>
 
-    <nav class="menu ${u.admin ? 'menu-admin' : ''}">
+      <p class="sidebar__group-label">Catálogo</p>
+      <a class="sidebar__link ${menu == 'fornecedores' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/fornecedores" ${menu == 'fornecedores' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v9H3z"/><path d="M14 9h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/></svg>
+        Fornecedores
+      </a>
+      <a class="sidebar__link ${menu == 'produtos' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/produtos" ${menu == 'produtos' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Produtos
+      </a>
+
+      <p class="sidebar__group-label">Produção</p>
+      <a class="sidebar__link ${menu == 'campanhas' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/campanhas" ${menu == 'campanhas' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
+        Campanhas
+      </a>
+      <a class="sidebar__link ${menu == 'cultivos' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/cultivos" ${menu == 'cultivos' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12c0-4-3-7-8-7 0 5 3 7 8 7z"/><path d="M12 10c0-3 2-6 7-6 0 4-2 6-7 6z"/></svg>
+        Cultivos
+      </a>
+      <a class="sidebar__link ${menu == 'colheitas' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/colheitas" ${menu == 'colheitas' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10h16l-2 10H6z"/><path d="M8 10l4-6 4 6"/></svg>
+        Colheitas
+      </a>
+
+      <p class="sidebar__group-label">Vendas</p>
+      <a class="sidebar__link ${menu == 'listagens' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/listagens" ${menu == 'listagens' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+        Listagens
+      </a>
+      <a class="sidebar__link ${menu == 'compras' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/compras" ${menu == 'compras' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>
+        Compras
+      </a>
+      <a class="sidebar__link ${menu == 'relatorios' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/relatorios" ${menu == 'relatorios' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg>
+        Relatórios
+      </a>
+
+      <p class="sidebar__group-label">Sistema</p>
+      <a class="sidebar__link ${menu == 'persistencia' ? 'sidebar__link--active' : ''}" href="${ctx}/admin/persistencia" ${menu == 'persistencia' ? 'aria-current="page"' : ''}>
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+        Persistência
+      </a>
+      <a class="sidebar__link" href="${ctx}/catalogo">
+        <svg class="sidebar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg>
+        Ver loja
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <p class="sidebar__user">
+        <span class="sidebar__user-name" title="${fn:escapeXml(u.email)}"><c:out value="${u.nome}"/></span>
+        <span class="sidebar__user-role">${u.perfil.descricao}</span>
+      </p>
+      <form method="post" action="${ctx}/logout">
+        <button type="submit" class="sidebar__logout">Sair</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="app__main">
+  </c:when>
+
+  <c:otherwise>
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="topbar__brand" href="${ctx}/">
+      <img class="topbar__logo" src="${ctx}/img/logo.svg" alt="" width="30" height="30">
+      <span>AgroGest</span>
+    </a>
+
+    <input type="checkbox" id="menu-abrir" class="topbar__toggle" aria-controls="menu-principal">
+    <label for="menu-abrir" class="topbar__burger">
+      <span class="visually-hidden">Abrir ou fechar o menu</span>
+      <span class="topbar__burger-line" aria-hidden="true"></span>
+      <span class="topbar__burger-line" aria-hidden="true"></span>
+      <span class="topbar__burger-line" aria-hidden="true"></span>
+    </label>
+
+    <nav class="topbar__nav" id="menu-principal" aria-label="Menu principal">
       <c:choose>
-        <c:when test="${u.admin}">
-          <a href="${ctx}/admin/dashboard" class="${menu == 'painel' ? 'activo' : ''}">Painel</a>
-          <a href="${ctx}/admin/fornecedores" class="${menu == 'fornecedores' ? 'activo' : ''}">Fornecedores</a>
-          <a href="${ctx}/admin/produtos" class="${menu == 'produtos' ? 'activo' : ''}">Produtos</a>
-          <a href="${ctx}/admin/campanhas" class="${menu == 'campanhas' ? 'activo' : ''}">Campanhas</a>
-          <a href="${ctx}/admin/cultivos" class="${menu == 'cultivos' ? 'activo' : ''}">Cultivos</a>
-          <a href="${ctx}/admin/colheitas" class="${menu == 'colheitas' ? 'activo' : ''}">Colheitas</a>
-          <a href="${ctx}/admin/listagens" class="${menu == 'listagens' ? 'activo' : ''}">Listagens</a>
-          <a href="${ctx}/admin/compras" class="${menu == 'compras' ? 'activo' : ''}">Compras</a>
-          <a href="${ctx}/admin/relatorios" class="${menu == 'relatorios' ? 'activo' : ''}">Relatórios</a>
-          <a href="${ctx}/admin/persistencia" class="${menu == 'persistencia' ? 'activo' : ''}">Persistência</a>
-        </c:when>
         <c:when test="${u.cliente}">
-          <a href="${ctx}/catalogo" class="${menu == 'catalogo' ? 'activo' : ''}">Catálogo</a>
-          <a href="${ctx}/carrinho" class="${menu == 'carrinho' ? 'activo' : ''}">Carrinho
+          <a class="topbar__link ${menu == 'catalogo' ? 'topbar__link--active' : ''}" href="${ctx}/catalogo" ${menu == 'catalogo' ? 'aria-current="page"' : ''}>Catálogo</a>
+          <a class="topbar__link ${menu == 'carrinho' ? 'topbar__link--active' : ''}" href="${ctx}/carrinho" ${menu == 'carrinho' ? 'aria-current="page"' : ''}>
+            Carrinho
             <c:if test="${sessionScope.carrinho != null && sessionScope.carrinho.numeroLinhas > 0}">
-              <span class="contador">${sessionScope.carrinho.numeroLinhas}</span>
+              <span class="topbar__badge">${sessionScope.carrinho.numeroLinhas}<span class="visually-hidden"> produtos</span></span>
             </c:if>
           </a>
-          <a href="${ctx}/minhas-compras" class="${menu == 'minhas' ? 'activo' : ''}">Minhas compras</a>
+          <a class="topbar__link ${menu == 'minhas' ? 'topbar__link--active' : ''}" href="${ctx}/minhas-compras" ${menu == 'minhas' ? 'aria-current="page"' : ''}>Minhas compras</a>
+          <span class="topbar__user" title="${fn:escapeXml(u.email)}"><c:out value="${u.nome}"/></span>
+          <form method="post" action="${ctx}/logout" class="topbar__logout-form">
+            <button type="submit" class="btn btn--secondary btn--sm">Sair</button>
+          </form>
         </c:when>
         <c:otherwise>
-          <a href="${ctx}/login" class="${menu == 'login' ? 'activo' : ''}">Entrar</a>
-          <a href="${ctx}/registo" class="${menu == 'registo' ? 'activo' : ''}">Criar conta</a>
+          <a class="topbar__link ${menu == 'login' ? 'topbar__link--active' : ''}" href="${ctx}/login" ${menu == 'login' ? 'aria-current="page"' : ''}>Entrar</a>
+          <a class="topbar__link ${menu == 'registo' ? 'topbar__link--active' : ''}" href="${ctx}/registo" ${menu == 'registo' ? 'aria-current="page"' : ''}>Criar conta</a>
         </c:otherwise>
       </c:choose>
-
-      <c:if test="${u != null}">
-        <span class="quem" title="${fn:escapeXml(u.email)} · ${u.perfil.descricao}"><c:out value="${u.nome}"/></span>
-        <form method="post" action="${ctx}/logout" class="form-sair">
-          <button type="submit" class="botao-sair">Sair</button>
-        </form>
-      </c:if>
     </nav>
   </div>
 </header>
+  </c:otherwise>
+</c:choose>
 
-<main class="conteudo">
+<main id="conteudo" class="page ${paginaEstreita ? 'page--narrow' : ''}" tabindex="-1">
   <c:if test="${not empty sessionScope.flash}">
-    <div class="aviso aviso-ok" role="status"><c:out value="${sessionScope.flash}"/></div>
+    <div class="alert alert--success" role="status">
+      <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+      <p><c:out value="${sessionScope.flash}"/></p>
+    </div>
     <c:remove var="flash" scope="session"/>
   </c:if>
   <c:if test="${not empty sessionScope.flashErro}">
-    <div class="aviso aviso-erro" role="alert"><c:out value="${sessionScope.flashErro}"/></div>
+    <div class="alert alert--error" role="alert">
+      <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+      <p><c:out value="${sessionScope.flashErro}"/></p>
+    </div>
     <c:remove var="flashErro" scope="session"/>
   </c:if>
   <c:if test="${not empty erro}">
-    <div class="aviso aviso-erro" role="alert"><c:out value="${erro}"/></div>
+    <div class="alert alert--error" role="alert">
+      <svg class="alert__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+      <p>
+        <c:out value="${erro}"/>
+        <c:if test="${not empty erroCampo}"> <a href="#campo-${erroCampo}">Ir para o campo</a></c:if>
+      </p>
+    </div>
   </c:if>

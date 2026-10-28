@@ -1,6 +1,8 @@
 <%-- Cabeçalho de coluna ordenável. Antes de incluir: ${baseOrdenar} (URL terminado em ? ou &amp;),
-     ${col} (valor de ordem), ${rotulo} e ${classeCol}. A ordenação é feita no servidor. --%>
-<th class="${classeCol}">
-  <a class="ordenar ${ordem == col ? 'ordenado' : ''}"
-     href="${ctx}${baseOrdenar}ordem=${col}&amp;dir=${ordem == col && dir == 'asc' ? 'desc' : 'asc'}">${rotulo}<c:if test="${ordem == col}"> <span aria-hidden="true">${dir == 'asc' ? '▲' : '▼'}</span></c:if></a>
+     ${col} (valor de ordem), ${rotulo} e ${numerica} (true para alinhar à direita).
+     A ordenação é feita no servidor; aria-sort diz o estado aos leitores de ecrã. --%>
+<th scope="col" class="table__th ${numerica ? 'table__th--num' : ''}"
+    aria-sort="${ordem == col ? (dir == 'asc' ? 'ascending' : 'descending') : 'none'}">
+  <a class="sort-link ${ordem == col ? 'sort-link--active' : ''}"
+     href="${ctx}${baseOrdenar}ordem=${col}&amp;dir=${ordem == col && dir == 'asc' ? 'desc' : 'asc'}">${rotulo}<c:if test="${ordem == col}"><span class="sort-link__arrow" aria-hidden="true">${dir == 'asc' ? '▲' : '▼'}</span></c:if><span class="visually-hidden">, ordenar</span></a>
 </th>

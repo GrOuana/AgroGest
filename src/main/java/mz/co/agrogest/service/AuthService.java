@@ -23,7 +23,7 @@ public class AuthService {
     public void garantirAdmin() {
         if (store.procurarUtilizadorPorEmail(ADMIN_EMAIL).isEmpty()) {
             Utilizador admin = new Utilizador("Administrador AgroGest", ADMIN_EMAIL, Hash.gerar(ADMIN_PASSWORD),
-                    Perfil.ADMIN, "+258 84 000 0000", "Nampula");
+                    Perfil.ADMIN, "840000000", "Nampula");
             store.adicionarUtilizadorSeEmailLivre(admin);
         }
     }
@@ -45,20 +45,23 @@ public class AuthService {
 
     public Utilizador registarCliente(String nome, String email, String password, String confirmacao,
                                       String telefone, String endereco) {
-        String n = Validar.obrigatorio(nome, "Nome");
-        String e = Validar.email(email);
-        if (password == null || password.length() < 4) {
-            throw new RegraNegocioException("A palavra-passe tem de ter pelo menos 4 caracteres.");
+        String n = Validar.nomePessoa(nome, "nome");
+        String e = Validar.email(email, "email");
+        if (password == null || password.length() < 4 || password.length() > 100) {
+            throw new RegraNegocioException("A palavra-passe tem de ter entre 4 e 100 caracteres.", "password");
         }
         if (!password.equals(confirmacao)) {
-            throw new RegraNegocioException("A confirmação não coincide com a palavra-passe.");
+            throw new RegraNegocioException("A confirmação não coincide com a palavra-passe.", "confirmacao");
         }
-        String t = Validar.obrigatorio(telefone, "Telefone");
-        String end = Validar.obrigatorio(endereco, "Endereço");
+        String t = Validar.telefone(telefone, "telefone");
+        String end = Validar.obrigatorio(endereco, "Endereço", "endereco");
+        if (end.length() < 5) {
+            throw new RegraNegocioException("Indique o endereço completo (rua ou bairro e cidade).", "endereco");
+        }
 
         Utilizador u = new Utilizador(n, e, Hash.gerar(password), Perfil.CLIENTE, t, end);
         if (!store.adicionarUtilizadorSeEmailLivre(u)) {
-            throw new RegraNegocioException("Já existe uma conta com o email «" + e + "».");
+            throw new RegraNegocioException("Já existe uma conta com o email «" + e + "».", "email");
         }
         return u;
     }

@@ -37,10 +37,10 @@ public class CatalogoService {
 
     public Fornecedor criarFornecedor(String nome, TipoFornecedor tipo, String contacto, String provincia) {
         Fornecedor f = new Fornecedor(
-                Validar.obrigatorio(nome, "Nome"),
-                Validar.presente(tipo, "Tipo"),
-                Validar.obrigatorio(contacto, "Contacto"),
-                Validar.obrigatorio(provincia, "Província"));
+                Validar.nomeEntidade(Validar.obrigatorio(nome, "Nome", "nome", 120), "Nome", "nome"),
+                Validar.presente(tipo, "Tipo", "tipo"),
+                Validar.telefone(contacto, "contacto"),
+                Validar.nomeEntidade(Validar.obrigatorio(provincia, "Província", "provincia", 60), "Província", "provincia"));
         return store.adicionarFornecedor(f);
     }
 
@@ -86,7 +86,8 @@ public class CatalogoService {
                                 LocalDate validade) {
         Produto p = new Produto();
         preencher(p, nome, categoria, preco, unidade, descricao, fotoUrl, validade);
-        p.setQuantidade(Validar.naoNegativo(quantidade, "Quantidade"));
+        Validar.naoPassada(validade, "validade", "validade");
+        p.setQuantidade(Validar.naoNegativo(quantidade, "Quantidade", "quantidade"));
         synchronized (store.lockProdutos()) {
             Fornecedor f = fornecedorExistente(fornecedorId);
             p.setFornecedorId(f.getId());
@@ -98,7 +99,7 @@ public class CatalogoService {
     public Produto actualizarProduto(int id, String nome, Categoria categoria, int fornecedorId, BigDecimal preco,
                                      int quantidade, String unidade, String descricao, String fotoUrl,
                                      LocalDate validade) {
-        Validar.naoNegativo(quantidade, "Quantidade");
+        Validar.naoNegativo(quantidade, "Quantidade", "quantidade");
         // Validar para um objecto temporário: se falhar, o produto real fica intacto
         Produto novo = new Produto();
         preencher(novo, nome, categoria, preco, unidade, descricao, fotoUrl, validade);
@@ -121,11 +122,12 @@ public class CatalogoService {
 
     /** Repor stock: soma a quantidade indicada (tem de ser positiva). */
     public Produto reporStock(int id, int quantidade) {
-        Validar.positivo(quantidade, "Quantidade a repor");
+        Validar.positivo(quantidade, "Quantidade a repor", "quantidade");
         synchronized (store.lockProdutos()) {
             Produto p = produtoExistente(id);
             if ((long) p.getQuantidade() + quantidade > Validar.QUANTIDADE_MAXIMA) {
-                throw new RegraNegocioException("O stock não pode passar de " + Validar.QUANTIDADE_MAXIMA + ".");
+                throw new RegraNegocioException("O stock não pode passar de " + Validar.QUANTIDADE_MAXIMA + ".",
+                        "quantidade");
             }
             p.setQuantidade(p.getQuantidade() + quantidade);
             return p;
@@ -143,12 +145,13 @@ public class CatalogoService {
 
     private void preencher(Produto p, String nome, Categoria categoria, BigDecimal preco, String unidade,
                            String descricao, String fotoUrl, LocalDate validade) {
-        p.setNome(Validar.obrigatorio(nome, "Nome"));
-        p.setCategoria(Validar.presente(categoria, "Categoria"));
-        p.setPreco(Dinheiro.arredondar(Validar.positivo(preco, "Preço")));
-        p.setUnidade(Validar.obrigatorio(unidade, "Unidade"));
-        p.setDescricao(Validar.opcional(descricao));
-        p.setFotoUrl(Validar.opcional(fotoUrl));
+        p.setNome(Validar.obrigatorio(nome, "Nome", "nome", 120));
+        p.setCategoria(Validar.presente(categoria, "Categoria", "categoria"));
+        p.setPreco(Dinheiro.arredondar(Validar.dinheiro(preco, "Preço", "preco")));
+        p.setUnidade(Validar.padrao(unidade, Validar.UNIDADE, "Unidade", "unidade",
+                "use só letras (kg, saco, unidade, litro)."));
+        p.setDescricao(Validar.opcional(descricao, 500));
+        p.setFotoUrl(Validar.fotoUrl(fotoUrl, "fotoUrl"));
         p.setValidade(validade);
     }
 
@@ -159,6 +162,6 @@ public class CatalogoService {
 
     private Fornecedor fornecedorExistente(int id) {
         return store.procurarFornecedor(id)
-                .orElseThrow(() -> new RegraNegocioException("Escolha um fornecedor válido."));
+                .orElseThrow(() -> new RegraNegocioException("Escolha um fornecedor válido.", "fornecedorId"));
     }
 }

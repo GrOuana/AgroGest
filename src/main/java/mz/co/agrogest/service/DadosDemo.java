@@ -35,11 +35,11 @@ public class DadosDemo {
         LocalDate hoje = LocalDate.now();
 
         Fornecedor agroSementes = s.catalogo().criarFornecedor("AgroSementes Nampula, Lda",
-                TipoFornecedor.SEMENTES, "+258 84 123 4567", "Nampula");
+                TipoFornecedor.SEMENTES, "841234567", "Nampula");
         Fornecedor fertiMoz = s.catalogo().criarFornecedor("FertiMoz, SA",
-                TipoFornecedor.FERTILIZANTES, "+258 82 765 4321", "Nacala");
+                TipoFornecedor.FERTILIZANTES, "827654321", "Nacala");
         Fornecedor maquiAgro = s.catalogo().criarFornecedor("MaquiAgro Moçambique",
-                TipoFornecedor.MAQUINARIA, "+258 86 222 3344", "Sofala");
+                TipoFornecedor.MAQUINARIA, "862223344", "Sofala");
 
         Produto milho = s.catalogo().criarProduto("Semente de Milho Matuba", Categoria.SEMENTE,
                 agroSementes.getId(), new BigDecimal("85.00"), 500, "kg",
@@ -54,14 +54,14 @@ public class DadosDemo {
                 "Lâmina de aço forjado com cabo de madeira de 1,2 m.",
                 "img/produtos/enxada.svg", null);
 
-        Utilizador maria = cliente("Maria Nhantumbo", "maria@teste.mz", "+258 84 111 2233",
+        Utilizador maria = cliente("Maria Nhantumbo", "maria@teste.mz", "841112233",
                 "Bairro Muahivire, Nampula");
-        Utilizador carlos = cliente("Carlos Muianga", "carlos@teste.mz", "+258 82 444 5566",
+        Utilizador carlos = cliente("Carlos Muianga", "carlos@teste.mz", "824445566",
                 "Av. Paulo Samuel Kankhomba, Nampula");
-        Utilizador ana = cliente("Ana Macuácua", "ana@teste.mz", "+258 87 777 8899",
+        Utilizador ana = cliente("Ana Macuácua", "ana@teste.mz", "877778899",
                 "Rua dos Viveiros, Ribáuè");
-        cliente("Pedro Cossa", "pedro@teste.mz", "+258 84 999 0011", "Bairro Namicopo, Nampula");
-        cliente("Fátima Abdul", "fatima@teste.mz", "+258 86 333 2211", "Ilha de Moçambique");
+        cliente("Pedro Cossa", "pedro@teste.mz", "849990011", "Bairro Namicopo, Nampula");
+        cliente("Fátima Abdul", "fatima@teste.mz", "863332211", "Ilha de Moçambique");
 
         venda(maria, LocalDateTime.of(2025, 10, 12, 9, 30), milho, 50);
         venda(carlos, LocalDateTime.of(2025, 11, 8, 14, 5), adubo, 10, milho, 100);

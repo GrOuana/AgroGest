@@ -1,6 +1,10 @@
 </main>
-<footer class="rodape">
+<footer class="site-footer">
   <p>AgroGest — Sistema de Gestão Agrícola · Nampula · Sistemas Distribuídos 2026</p>
 </footer>
+<c:if test="${u.admin}">
+  </div><%-- .app__main --%>
+</div><%-- .app --%>
+</c:if>
 </body>
 </html>

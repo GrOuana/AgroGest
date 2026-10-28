@@ -19,7 +19,7 @@ public class RegistoServlet extends BaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        vista(req, resp, "registo");
+        vista(req, resp, "registo-cliente");
     }
 
     @Override
@@ -34,8 +34,8 @@ public class RegistoServlet extends BaseServlet {
             sucesso(req, "Bem-vindo(a), " + u.getNome() + "! A sua conta foi criada.");
             redirect(req, resp, "/catalogo");
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
-            vista(req, resp, "registo");
+            erro(req, e);
+            vista(req, resp, "registo-cliente");
         }
     }
 }

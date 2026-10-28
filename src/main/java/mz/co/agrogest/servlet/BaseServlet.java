@@ -55,6 +55,15 @@ public abstract class BaseServlet extends HttpServlet {
         req.setAttribute("erro", mensagem);
     }
 
+    /**
+     * Erro de validação para a JSP mostrar: ${erro} é a mensagem e ${erroCampo}
+     * o nome do campo, que a vista marca com aria-invalid e a mensagem ao lado.
+     */
+    protected void erro(HttpServletRequest req, RegraNegocioException e) {
+        req.setAttribute("erro", e.getMessage());
+        req.setAttribute("erroCampo", e.getCampo());
+    }
+
     protected void erroAposRedirect(HttpServletRequest req, String mensagem) {
         req.getSession().setAttribute(Sessao.FLASH_ERRO, mensagem);
     }
@@ -87,12 +96,12 @@ public abstract class BaseServlet extends HttpServlet {
     protected int inteiro(HttpServletRequest req, String nome, String campo) {
         String v = texto(req, nome);
         if (v == null || v.isEmpty()) {
-            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.");
+            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.", nome);
         }
         try {
             return Integer.parseInt(v);
         } catch (NumberFormatException e) {
-            throw new RegraNegocioException("O campo «" + campo + "» tem de ser um número inteiro.");
+            throw new RegraNegocioException("O campo «" + campo + "» tem de ser um número inteiro.", nome);
         }
     }
 
@@ -111,20 +120,20 @@ public abstract class BaseServlet extends HttpServlet {
     protected BigDecimal decimal(HttpServletRequest req, String nome, String campo) {
         String v = texto(req, nome);
         if (v == null || v.isEmpty()) {
-            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.");
+            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.", nome);
         }
         try {
             // Aceita 22,5 e 22.5
             return new BigDecimal(v.replace(" ", "").replace(',', '.'));
         } catch (NumberFormatException e) {
-            throw new RegraNegocioException("O campo «" + campo + "» tem de ser um número.");
+            throw new RegraNegocioException("O campo «" + campo + "» tem de ser um número.", nome);
         }
     }
 
     protected LocalDate data(HttpServletRequest req, String nome, String campo) {
         LocalDate d = dataOpcional(req, nome, campo);
         if (d == null) {
-            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.");
+            throw new RegraNegocioException("O campo «" + campo + "» é obrigatório.", nome);
         }
         return d;
     }
@@ -137,14 +146,14 @@ public abstract class BaseServlet extends HttpServlet {
         try {
             return LocalDate.parse(v);
         } catch (DateTimeParseException e) {
-            throw new RegraNegocioException("O campo «" + campo + "» não tem uma data válida.");
+            throw new RegraNegocioException("O campo «" + campo + "» não tem uma data válida.", nome);
         }
     }
 
     protected <E extends Enum<E>> E enumeracao(HttpServletRequest req, String nome, Class<E> tipo, String campo) {
         E e = enumeracaoOpcional(req, nome, tipo);
         if (e == null) {
-            throw new RegraNegocioException("Escolha um valor válido para «" + campo + "».");
+            throw new RegraNegocioException("Escolha um valor válido para «" + campo + "».", nome);
         }
         return e;
     }

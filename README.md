@@ -13,7 +13,7 @@ O AgroGest junta numa só aplicação web a **loja** e o **caderno de campo** de
 |---|---|
 | Linguagem | Java 17 |
 | Servidor | Apache Tomcat 10.1 (porta **8081**) |
-| Vista | JSP + JSTL 3.0 + EL + HTML5 + CSS3 (sem JavaScript) |
+| Vista | JSP + JSTL 3.0 + EL + HTML5 semântico + CSS3 próprio (`global.css`, BEM, sem frameworks e sem JavaScript) |
 | Controladores | Jakarta Servlets 6.0 (`@WebServlet`) |
 | Filtros / listener | `@WebFilter`, `@WebListener` |
 | Persistência | `Collections.synchronizedList` + serialização Java (`ObjectOutputStream`) |
@@ -30,9 +30,10 @@ O AgroGest junta numa só aplicação web a **loja** e o **caderno de campo** de
 4. [Regras de negócio e onde estão no código](#4-regras-de-negócio-e-onde-estão-no-código)
 5. [Concorrência e transacção de venda](#5-concorrência-e-transacção-de-venda)
 6. [Persistência e tolerância a falhas](#6-persistência-e-tolerância-a-falhas)
-7. [Testes](#7-testes)
-8. [Resolução de problemas](#8-resolução-de-problemas)
-9. [Documentação adicional](#9-documentação-adicional)
+7. [Interface e validação](#7-interface-e-validação)
+8. [Testes](#8-testes)
+9. [Resolução de problemas](#9-resolução-de-problemas)
+10. [Documentação adicional](#10-documentação-adicional)
 
 ---
 
@@ -189,7 +190,8 @@ src/main/webapp/
   WEB-INF/agrogest.tld     funções EL de formatação (f:mt, f:data…)
   WEB-INF/jsp/             todas as JSP, só alcançáveis por forward
      comum/ admin/ cliente/ erro/
-  css/estilo.css           folha de estilos própria, responsiva
+  css/global.css           folha de estilos própria: tokens, modo escuro, BEM, responsiva
+  fonts/                   Inter (SIL OFL), servida localmente — funciona sem internet
   img/                     logótipo e fotografias dos produtos (SVG)
 ```
 
@@ -241,6 +243,7 @@ A lista completa de URLs está em [`docs/rotas.md`](docs/rotas.md) e os campos e
 | Valor da colheita calculado pelo sistema (kg × preço/kg) | `ProducaoService.registarColheita` |
 | Factura `FT-ano-N`, subtotal, IVA 16% e total | `VendaService`, `DataStore.proximoNumeroFactura`, `util/Dinheiro` |
 | Quantidades ≤ 0 recusadas no carrinho e na reposição de stock | `CarrinhoService`, `CatalogoService.reporStock`, `Validar` |
+| Telefone moçambicano (9 dígitos, 82–87), nomes só com letras, email válido, preços positivos com 2 casas | `service/Validar` (servidor) + atributos `pattern`/`min`/`step` (browser) — ver [secção 7](#7-interface-e-validação) |
 | Nenhuma palavra-passe em texto puro | `util/Hash` (PBKDF2WithHmacSHA256, 65 536 iterações, sal de 16 bytes) |
 | Extra: não remover fornecedor com produtos; não registar cultivos/colheitas em campanha fechada; plantio dentro do período da campanha; produto fora da validade não se vende | `CatalogoService`, `ProducaoService`, `CarrinhoService`, `VendaService` |
 
@@ -293,7 +296,70 @@ O mesmo ecrã permite **eliminar o ficheiro** e **repor os dados de demonstraç�
 
 ---
 
-## 7. Testes
+## 7. Interface e validação
+
+### Design system (`css/global.css`)
+
+A folha de estilos é escrita de raiz, sem Bootstrap, Tailwind ou qualquer framework, e organiza-se assim:
+
+- **Design tokens no `:root`.** Cores (verde esmeralda `--color-primary` para as acções e neutros para o resto), tipografia (Inter, escala `--text-*`), espaçamento (escala de 4 px), raios, sombras e tempos de transição. Nenhuma cor está escrita directamente num componente.
+- **Modo escuro nativo** com `@media (prefers-color-scheme: dark)`: só os tokens mudam, os componentes ficam iguais.
+- **BEM** (`bloco__elemento--modificador`) em todas as classes, por exemplo `.product-card__price` e `.btn--primary`. Não há selectores encadeados que dependam da estrutura do HTML.
+- **Layouts:**
+  - o administrador usa **CSS Grid** (`.app`: barra lateral + conteúdo), que no telemóvel passa a uma faixa de navegação horizontal;
+  - o catálogo usa **Flexbox** (`.product-grid`, cartões com `flex: 1 1 15.5rem`).
+- **Defensive CSS:**
+  - `min-width: 0` nos filhos de grid e flex;
+  - `minmax(0, 1fr)` nas grelhas;
+  - `overflow-wrap` nos textos vindos dos utilizadores;
+  - descrições cortadas em 3 linhas (`line-clamp`);
+  - imagens com `aspect-ratio` + `object-fit` e foto de recurso;
+  - tabelas com scroll horizontal;
+  - `flex-wrap` nos grupos de botões.
+
+  Foi testado com um produto de nome com 60 caracteres sem espaços (`docs/img/45-*.png`, `46-*.png`).
+- **Micro-interacções:**
+  - transições suaves e `box-shadow` no `:hover` dos botões, cartões e indicadores;
+  - anel de foco esmeralda no `:focus` dos campos;
+  - animação de entrada dos avisos.
+
+  Tudo é desligado quando o sistema pede `prefers-reduced-motion`.
+- **Fonte Inter** incluída no WAR (`fonts/`, licença SIL OFL). A demonstração não depende da internet.
+
+### Acessibilidade
+
+- **Estrutura da página:** HTML semântico (`header`, `nav`, `main`, `aside`, `section`, `article`, `address`, `time`, `dl`), um `h1` por página e títulos sem saltos.
+- **Teclado:** ligação "Saltar para o conteúdo" e `:focus-visible` em todos os elementos interactivos.
+- **Navegação:** `aria-current="page"` no menu e `aria-sort` nos cabeçalhos ordenáveis.
+- **Campos:** todos têm `<label>`. As ajudas ligam-se por `aria-describedby` e os erros marcam o campo com `aria-invalid="true"`. Os avisos usam `role="alert"`/`role="status"`.
+- **Tabelas:** `<th scope>`, e texto escondido (`.visually-hidden`) nos botões repetidos, como "Remover «Adubo NPK»".
+- **Auditoria automática:** 26 páginas geradas, 0 problemas (labels, `alt`, IDs duplicados, referências ARIA, botões sem texto, hierarquia de títulos).
+
+### Validação em duas camadas
+
+| Campo | No browser (HTML5) | No servidor (`service/Validar`) |
+|---|---|---|
+| Telefone (cliente e fornecedor) | `type="tel" pattern="^8[2-7]\d{7}$"` + `title` com o formato | `TELEFONE_MZ` (aceita espaços ao escrever, guarda só os 9 dígitos) |
+| Nome de cliente | `pattern` só com letras, espaços, `'` e `-` | `NOME_PESSOA` + mínimo de 2 letras |
+| Nome de fornecedor, província, cultura | letras e `. , & ' -`, sem números (permite "Sementes do Sul, Lda") | `NOME_ENTIDADE` |
+| Email | `type="email"` + `pattern` com domínio | `EMAIL` + unicidade sob lock |
+| Preço, preço/kg | `type="number" min="0.01" step="0.01"` | positivo, ≤ 100 milhões, no máximo 2 casas decimais |
+| Quantidades, stock | `type="number" min="0\|1" step="1"` | inteiro, ≥ 0 ou > 0, ≤ 1 000 000 |
+| Unidade | `pattern` só letras | `UNIDADE` |
+| Foto | `pattern` `https://…` ou `img/…` | idem (recusa `javascript:`) |
+| Validade | `type="date"` | não pode estar no passado (ao criar) |
+
+A validação do browser dá resposta imediata (`:user-invalid` pinta o campo de vermelho depois de o utilizador lhe mexer). A do servidor é a que garante a integridade dos dados, porque a do browser pode ser contornada.
+
+Quando o servidor recusa, `BaseServlet.erro(req, e)` faz duas coisas:
+- põe `request.setAttribute("erro", …)` com a mensagem;
+- põe `request.setAttribute("erroCampo", …)` com o nome do campo.
+
+A JSP assinala então esse campo com `form__input--invalid` e `aria-invalid="true"`, e mostra a mensagem junto dele (`comum/erro-campo.jspf`). O formulário volta preenchido com o que foi escrito, sempre escapado contra XSS.
+
+---
+
+## 8. Testes
 
 Com a aplicação acabada de arrancar, ou depois de **Repor dados de demonstração**:
 
@@ -301,13 +367,22 @@ Com a aplicação acabada de arrancar, ou depois de **Repor dados de demonstraç
 bash scripts/testar.sh
 ```
 
-São 56 verificações automáticas com `curl`: controlo de acesso (403 e redirecionamento para o login), percurso completo do administrador e do cliente do enunciado, validações, RN01–RN06, atomicidade (o primeiro item não é descontado quando o segundo falha) e concorrência (2 e 20 compras em simultâneo). Os casos de teste estão descritos em [`docs/testes.md`](docs/testes.md).
+São 70 verificações automáticas com `curl`:
+- controlo de acesso (403 e redirecionamento para o login);
+- percurso completo do administrador e do cliente do enunciado;
+- validações no servidor: telefone, nome com números, email, preço com 3 casas ou com letras, unidade, URL `javascript:`, validade no passado;
+- escape de XSS;
+- RN01–RN06;
+- atomicidade (o primeiro item não é descontado quando o segundo falha);
+- concorrência (2 e 20 compras em simultâneo).
+
+Os casos de teste estão descritos em [`docs/testes.md`](docs/testes.md).
 
 Teste manual de persistência: fazer uma compra → reiniciar o Tomcat (`shutdown.bat` + `startup.bat`, ou `systemctl restart tomcat`) → os dados continuam e a próxima factura segue a numeração.
 
 ---
 
-## 8. Resolução de problemas
+## 9. Resolução de problemas
 
 | Sintoma | Causa e solução |
 |---|---|
@@ -320,7 +395,7 @@ Teste manual de persistência: fazer uma compra → reiniciar o Tomcat (`shutdow
 
 ---
 
-## 9. Documentação adicional
+## 10. Documentação adicional
 
 | Documento | Conteúdo |
 |---|---|

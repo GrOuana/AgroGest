@@ -1,6 +1,6 @@
 # Casos de teste
 
-Os casos marcados com ✔ são verificados automaticamente por `bash scripts/testar.sh`. A última execução, a 24/10/2026, deu **56 OK, 0 falhas**.
+Os casos marcados com ✔ são verificados automaticamente por `bash scripts/testar.sh`. A última execução, a 28/10/2026, deu **70 OK, 0 falhas**.
 
 Para testar à mão: arrancar com os dados de demonstração (ou **Persistência → Repor dados de demonstração**) e usar `admin@agro.mz / admin234` e os clientes `…@teste.mz / 1234`.
 
@@ -26,6 +26,18 @@ Para testar à mão: arrancar com os dados de demonstração (ou **Persistência
 | Caso | Resultado esperado | Auto |
 |---|---|---|
 | Registo com email já existente (mesmo com maiúsculas: `JOAO@teste.mz`) | "Já existe uma conta com o email …" | ✔ |
+| Telefone `881234567` (prefixo 88 não existe) | "«Telefone» inválido: 9 dígitos a começar por 82…87"; campo com `aria-invalid="true"` e mensagem junto dele | ✔ |
+| Telefone com 7 dígitos | "«Telefone» inválido" | ✔ |
+| Telefone escrito com espaços (`84 123 4567`) | Aceite e guardado como `841234567`; mostrado como `+258 84 123 4567` | ✔ |
+| Nome de cliente com números (`Ana2 Teste`) | "«Nome» inválido: use só letras e espaços, sem números." | ✔ |
+| Email sem domínio (`val4@semponto`) | "O email … não é válido" | ✔ |
+| Fornecedor com números no nome (`Agro2000`) ou contacto inválido (`123`) | "«Nome» inválido" / "«Telefone» inválido" | ✔ |
+| Preço com 3 casas decimais (`10.555`) ou com letras (`abc`) | "aceita no máximo 2 casas decimais" / "tem de ser um número" | ✔ |
+| Unidade com números (`5kg`) | "«Unidade» inválido" | ✔ |
+| Foto `javascript:alert(1)` | "A foto tem de ser um endereço http(s):// ou um caminho img/…" | ✔ |
+| Produto novo com validade no passado | "A «validade» não pode estar no passado." | ✔ |
+| XSS: nome `<script>alert(1)</script>` devolvido ao formulário | Aparece escapado (`&lt;script&gt;`), nunca executa | ✔ |
+| Validação no browser (HTML5) | Os `pattern` foram compilados com a flag `v`, como no browser, e testados com 25 casos (válidos e inválidos) | ✔ |
 | Registo com palavra-passe < 4 caracteres ou confirmação diferente | Mensagem e formulário preenchido de novo | manual |
 | Login com palavra-passe errada | "Email ou palavra-passe incorrectos." | ✔ |
 | Conta de cliente desactivada pelo admin tenta entrar | "Esta conta está desactivada." | manual |

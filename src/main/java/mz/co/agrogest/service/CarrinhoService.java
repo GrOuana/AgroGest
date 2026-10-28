@@ -26,7 +26,7 @@ public class CarrinhoService {
     }
 
     public void adicionar(Carrinho carrinho, int produtoId, int quantidade) {
-        Validar.positivo(quantidade, "Quantidade");
+        Validar.positivo(quantidade, "Quantidade", "quantidade");
         Produto p = produtoVendavel(produtoId);
         synchronized (carrinho) {
             int novo = carrinho.quantidadeDe(produtoId) + quantidade;
@@ -36,7 +36,7 @@ public class CarrinhoService {
     }
 
     public void actualizar(Carrinho carrinho, int produtoId, int quantidade) {
-        Validar.positivo(quantidade, "Quantidade");
+        Validar.positivo(quantidade, "Quantidade", "quantidade");
         if (carrinho.quantidadeDe(produtoId) == 0) {
             throw new RegraNegocioException("Esse produto não está no carrinho.");
         }

@@ -1,0 +1,5 @@
+<%-- Mensagem de erro do servidor junto ao campo. Antes de incluir: ${campo} = nome do parâmetro.
+     O input correspondente aponta para id="erro-${campo}" no aria-describedby quando há erro. --%>
+<c:if test="${not empty erroCampo && erroCampo == campo}">
+  <p class="form__error" id="erro-${campo}"><c:out value="${erro}"/></p>
+</c:if>

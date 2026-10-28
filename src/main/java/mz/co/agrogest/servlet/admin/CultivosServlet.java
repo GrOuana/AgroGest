@@ -61,7 +61,7 @@ public class CultivosServlet extends BaseServlet {
             }
             redirect(req, resp, "/admin/cultivos" + (filtro == null ? "" : "?campanhaId=" + filtro));
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             doGet(req, resp);
         }
     }

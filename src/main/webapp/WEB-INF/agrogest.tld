@@ -35,6 +35,11 @@
     <function-signature>java.lang.String iso(java.time.LocalDate)</function-signature>
   </function>
   <function>
+    <name>telefone</name>
+    <function-class>mz.co.agrogest.util.Formatos</function-class>
+    <function-signature>java.lang.String telefone(java.lang.String)</function-signature>
+  </function>
+  <function>
     <name>foto</name>
     <function-class>mz.co.agrogest.util.Formatos</function-class>
     <function-signature>java.lang.String foto(java.lang.String, java.lang.String)</function-signature>

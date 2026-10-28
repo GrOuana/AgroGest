@@ -21,7 +21,7 @@ chk "anónimo /admin/produtos → 403" '[ "$(code $B/admin/produtos)" = 403 ]'
 chk "anónimo /catalogo → redirect login" '[ "$(curl -s -o /dev/null -w "%{redirect_url}" $B/catalogo)" = "$B/login" ]'
 chk "anónimo /minhas-compras → redirect login" '[ "$(curl -s -o /dev/null -w "%{redirect_url}" $B/minhas-compras)" = "$B/login" ]'
 chk "JSP directa inacessível (404)" '[ "$(code $B/WEB-INF/jsp/admin/dashboard.jsp)" = 404 ]'
-chk "CSS público" '[ "$(code $B/css/estilo.css)" = 200 ]'
+chk "CSS e fonte Inter públicos" '[ "$(code $B/css/global.css)" = 200 ] && [ "$(code $B/fonts/inter-latin-wght-normal.woff2)" = 200 ]'
 
 echo "== Administrador"
 r=$(post adm /login --data-urlencode "email=admin@agro.mz" --data-urlencode "password=errada")
@@ -29,10 +29,10 @@ chk "password errada recusada" 'grep -q "incorrectos" $T/ultima.html'
 r=$(post adm /login --data-urlencode "email=admin@agro.mz" --data-urlencode "password=admin234")
 chk "login admin → painel" '[[ "$r" == *"/admin/dashboard" ]]'
 get adm $B/admin/dashboard > $T/painel.html
-chk "painel: 3 fornecedores" 'grep -q "indicador-valor\">3</span><span>fornecedores" $T/painel.html'
-chk "painel: 5 clientes / 4 vendas / 1 campanha" 'grep -q ">5</span><span>clientes" $T/painel.html && grep -q ">4</span><span>vendas" $T/painel.html && grep -q ">1</span><span>campanha<" $T/painel.html'
+chk "painel: 3 fornecedores" 'grep -q "stats__value\">3</span><span class=\"stats__label\">fornecedores" $T/painel.html'
+chk "painel: 5 clientes / 4 vendas / 1 campanha" 'grep -q ">5</span><span class=\"stats__label\">clientes" $T/painel.html && grep -q ">4</span><span class=\"stats__label\">vendas" $T/painel.html && grep -q ">1</span><span class=\"stats__label\">campanha<" $T/painel.html'
 
-post adm /admin/fornecedores -d accao=criar --data-urlencode "nome=Sementes do Sul, Lda" -d tipo=SEMENTES --data-urlencode "contacto=+258 84 555 1234" -d provincia=Maputo >/dev/null
+post adm /admin/fornecedores -d accao=criar --data-urlencode "nome=Sementes do Sul, Lda" -d tipo=SEMENTES -d contacto=845551234 -d provincia=Maputo >/dev/null
 get adm $B/admin/fornecedores > $T/f.html
 chk "fornecedor Sementes do Sul criado (acentos/vírgula)" 'grep -q "Sementes do Sul, Lda" $T/f.html'
 
@@ -72,14 +72,44 @@ for p in "listagens?tipo=produtos&ordem=preco&dir=desc" "listagens?tipo=forneced
   chk "GET /admin/$p → 200 sem excepção" '[ "$c" = 200 ] && ! grep -qiE "exception|erro inesperado" $T/x.html'
 done
 get adm "$B/admin/listagens?tipo=produtos&ordem=preco&dir=desc" > $T/l.html
-chk "listagem ordenada por preço desc: Adubo primeiro" '[ "$(grep -o "<td><strong>[^<]*" $T/l.html | head -1)" = "<td><strong>Adubo NPK 12-24-12" ]'
+chk "listagem ordenada por preço desc: Adubo primeiro" '[ "$(grep -o "table__strong\">[^<]*" $T/l.html | head -1)" = "table__strong\">Adubo NPK 12-24-12" ]'
 get adm $B/admin/relatorios > $T/r.html
 chk "relatório: Pedro e Fátima sem compras" 'grep -q "Pedro Cossa" $T/r.html && grep -q "Fátima Abdul" $T/r.html'
 
+echo "== Validações no servidor (as mesmas regras dos atributos HTML5)"
+reg() { post val /registo -d "nome=$1" -d "email=$2" -d password=1234 -d confirmacao=1234 -d "telefone=$3" -d "endereco=Rua%20Teste%2C%20Nampula"; }
+r=$(reg "Ana%20Teste" "val1@teste.mz" "881234567")
+chk "registo: telefone 88… recusado" 'grep -q "«Telefone» inválido" $T/ultima.html'
+chk "registo: campo telefone assinalado (aria-invalid + mensagem junto ao campo)" 'grep -q "id=\"erro-telefone\"" $T/ultima.html && grep -A8 "id=\"campo-telefone\"" $T/ultima.html | grep -q "aria-invalid=\"true\""'
+r=$(reg "Ana%20Teste" "val2@teste.mz" "8412345")
+chk "registo: telefone com 7 dígitos recusado" 'grep -q "«Telefone» inválido" $T/ultima.html'
+r=$(reg "Ana2%20Teste" "val3@teste.mz" "841234567")
+chk "registo: nome com números recusado" 'grep -q "«Nome» inválido" $T/ultima.html && grep -q "id=\"erro-nome\"" $T/ultima.html'
+r=$(reg "Ana%20Teste" "val4@semponto" "841234567")
+chk "registo: email sem domínio recusado" 'grep -q "não é válido" $T/ultima.html'
+r=$(reg "Ana%20Teste" "val5@teste.mz" "84%20123%204567")
+chk "registo: telefone com espaços aceite e guardado só com dígitos" '[[ "$r" == *"/catalogo" ]]'
+r=$(post adm /admin/fornecedores -d accao=criar -d nome=Agro2000 -d tipo=SEMENTES -d contacto=845551234 -d provincia=Tete)
+chk "fornecedor: nome com números recusado" 'grep -q "«Nome» inválido" $T/ultima.html'
+r=$(post adm /admin/fornecedores -d accao=criar -d nome=Teste -d tipo=SEMENTES -d contacto=123 -d provincia=Tete)
+chk "fornecedor: contacto inválido recusado" 'grep -q "«Telefone» inválido" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d nome=Teste -d categoria=SEMENTE -d fornecedorId=1 -d preco=10.555 -d quantidade=1 -d unidade=kg)
+chk "produto: preço com 3 casas decimais recusado" 'grep -q "2 casas decimais" $T/ultima.html && grep -q "id=\"erro-preco\"" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d nome=Teste -d categoria=SEMENTE -d fornecedorId=1 -d preco=abc -d quantidade=1 -d unidade=kg)
+chk "produto: preço com letras recusado" 'grep -q "tem de ser um número" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d nome=Teste -d categoria=SEMENTE -d fornecedorId=1 -d preco=10 -d quantidade=1 -d unidade=5kg)
+chk "produto: unidade com números recusada" 'grep -q "«Unidade» inválido" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d nome=Teste -d categoria=SEMENTE -d fornecedorId=1 -d preco=10 -d quantidade=1 -d unidade=kg -d "fotoUrl=javascript:alert(1)")
+chk "produto: URL de foto javascript: recusado" 'grep -q "A foto tem de ser" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d nome=Teste -d categoria=SEMENTE -d fornecedorId=1 -d preco=10 -d quantidade=1 -d unidade=kg -d validade=2020-01-01)
+chk "produto: validade no passado recusada" 'grep -q "não pode estar no passado" $T/ultima.html'
+r=$(post adm /admin/produtos -d accao=criar -d "nome=%3Cscript%3Ealert(1)%3C%2Fscript%3E" -d categoria=SEMENTE -d fornecedorId=1 -d preco=-1 -d quantidade=1 -d unidade=kg)
+chk "XSS: texto devolvido ao formulário vem escapado" '! grep -q "<script>alert" $T/ultima.html && grep -q "&lt;script&gt;" $T/ultima.html'
+
 echo "== Cliente"
-r=$(post jo /registo -d "nome=Jo%C3%A3o%20Silva" -d email=joao@teste.mz -d password=1234 -d confirmacao=1234 --data-urlencode "telefone=+258 84 765 4321" --data-urlencode "endereco=Av. Eduardo Mondlane, Nampula")
+r=$(post jo /registo -d "nome=Jo%C3%A3o%20Silva" -d email=joao@teste.mz -d password=1234 -d confirmacao=1234 -d telefone=847654321 --data-urlencode "endereco=Av. Eduardo Mondlane, Nampula")
 chk "registo do João → catálogo" '[[ "$r" == *"/catalogo" ]]'
-r=$(post dup /registo -d nome=Outro -d email=JOAO@teste.mz -d password=1234 -d confirmacao=1234 -d telefone=1 -d endereco=x)
+r=$(post dup /registo -d nome=Outro -d email=JOAO@teste.mz -d password=1234 -d confirmacao=1234 -d telefone=841110000 -d "endereco=Rua%20Teste%2C%20Nampula")
 chk "email repetido recusado (maiúsculas)" 'grep -q "Já existe uma conta" $T/ultima.html'
 get jo $B/catalogo > $T/cat.html
 chk "catálogo mostra Feijão nhemba e fotos" 'grep -q "Semente Feijão nhemba" $T/cat.html && grep -q "img/produtos/milho.svg" $T/cat.html'
@@ -120,7 +150,7 @@ login ma maria@teste.mz 1234
 post ma /carrinho/adicionar -d produtoId=1 -d quantidade=2 >/dev/null
 post ma /carrinho/adicionar -d produtoId=3 -d quantidade=2 >/dev/null
 # Admin baixa o stock da enxada para 1 depois de a Maria pôr 2 no carrinho
-post adm /admin/produtos -d accao=actualizar -d id=3 -d nome="Enxada de cabo longo" -d categoria=FERRAMENTA -d fornecedorId=3 -d preco=450 -d quantidade=1 -d unidade=unidade >/dev/null
+post adm /admin/produtos -d accao=actualizar -d id=3 -d nome="Enxada de cabo longo" -d categoria=FERRAMENTA -d fornecedorId=3 -d preco=450 -d quantidade=1 -d unidade=unidade -d fotoUrl=img/produtos/enxada.svg >/dev/null
 r=$(post ma /compra)
 get ma $B/carrinho > $T/ma.html
 chk "compra recusada com aviso de indisponibilidade" 'grep -q "Nenhum stock foi descontado" $T/ma.html'
@@ -144,7 +174,7 @@ echo "== Concorrência: 20 compras simultâneas de 1 kg com 10 em stock"
 post adm /admin/produtos -d accao=criar -d "nome=Teste%20concorr%C3%AAncia" -d categoria=SEMENTE -d fornecedorId=1 -d preco=10 -d quantidade=10 -d unidade=kg >/dev/null
 PID=$(get adm $B/admin/produtos | grep -o 'id="produto-[0-9]*"' | grep -o '[0-9]*' | sort -n | tail -1)
 for i in $(seq 1 20); do
-  post "k$i" /registo -d nome="Cliente $i" -d email="k$i@teste.mz" -d password=1234 -d confirmacao=1234 -d telefone=1 -d endereco=x >/dev/null
+  post "k$i" /registo -d "nome=Cliente%20Teste" -d email="k$i@teste.mz" -d password=1234 -d confirmacao=1234 -d telefone=$(printf "8400000%02d" $i) -d "endereco=Rua%20Teste%2C%20Nampula" >/dev/null
   post "k$i" /carrinho/adicionar -d produtoId=$PID -d quantidade=1 >/dev/null
 done
 for i in $(seq 1 20); do curl -s -o /dev/null -w "%{redirect_url}\n" -b $T/k$i -X POST $B/compra > $T/rk$i & done

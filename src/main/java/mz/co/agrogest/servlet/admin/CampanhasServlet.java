@@ -60,7 +60,7 @@ public class CampanhasServlet extends BaseServlet {
             }
             redirect(req, resp, "/admin/campanhas");
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             doGet(req, resp);
         }
     }

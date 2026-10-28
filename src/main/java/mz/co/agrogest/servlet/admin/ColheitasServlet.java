@@ -73,7 +73,7 @@ public class ColheitasServlet extends BaseServlet {
             }
             redirect(req, resp, "/admin/colheitas" + (filtro == null ? "" : "?cultivoId=" + filtro));
         } catch (RegraNegocioException e) {
-            erro(req, e.getMessage());
+            erro(req, e);
             doGet(req, resp);
         }
     }
