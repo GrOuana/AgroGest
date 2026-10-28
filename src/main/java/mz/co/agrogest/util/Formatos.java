@@ -70,7 +70,7 @@ public final class Formatos {
     /** Endereço da foto: URL absoluto tal como está, caminho relativo dentro da aplicação. */
     public static String foto(String contexto, String url) {
         if (url == null || url.isBlank()) {
-            return contexto + "/img/produtos/sem-foto.svg";
+            return contexto + "/img/produtos/sem-foto.jpg";
         }
         if (url.startsWith("http://") || url.startsWith("https://")) {
             return url;

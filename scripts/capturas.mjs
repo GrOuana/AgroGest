@@ -133,7 +133,7 @@ async function main() {
   // ---------------------------------------------------------- administrador
   await ir('/login');
   await captura('01-login');
-  await preencher({ 'input[name=email]': 'admin@agro.mz', 'input[name=password]': 'admin234' }, 'button[type=submit]');
+  await preencher({ 'input[name=email]': 'admin@agro.mz', 'input[name=password]': 'admin234' }, 'main button[type=submit]');
 
   // Repor os dados de demonstração para as capturas baterem com o enunciado
   await ir('/admin/persistencia');
@@ -154,7 +154,7 @@ async function main() {
   await preencher({ 'input[name=nome]': 'Semente Feijão nhemba', 'select[name=categoria]': 'SEMENTE',
     'select[name=fornecedorId]': fid, 'input[name=preco]': '320', 'input[name=quantidade]': '400',
     'input[name=unidade]': 'kg', 'input[name=validade]': validade.toISOString().slice(0, 10),
-    'input[name=fotoUrl]': 'img/produtos/feijao.svg',
+    'input[name=fotoUrl]': 'img/produtos/feijao.jpg',
     'textarea[name=descricao]': 'Feijão nhemba de ciclo curto, tolerante à seca.' });
   await captura('04-admin-produto-formulario', { inteira: false });
   await clicar('form button.btn--primary');
@@ -203,12 +203,12 @@ async function main() {
     'input[name=telefone]': '847654321', 'input[name=endereco]': 'Av. Eduardo Mondlane, Nampula' });
   await captura('20-cliente-registo');
   // Validação do servidor: desligar a do browser e enviar um telefone inválido
-  await js(`document.querySelector('form.form').noValidate = true`);
+  await js(`document.querySelector('main form.form').noValidate = true`);
   await preencher({ 'input[name=telefone]': '881234567', 'input[name=password]': '1234', 'input[name=confirmacao]': '1234' },
-    'form button[type=submit]');
+    'main form button[type=submit]');
   await captura('20b-cliente-registo-erro');
   await preencher({ 'input[name=telefone]': '847654321', 'input[name=password]': '1234', 'input[name=confirmacao]': '1234' });
-  await clicar('form button[type=submit]');
+  await clicar('main form button[type=submit]');
   await captura('21-cliente-catalogo');
   await ir('/catalogo?categoria=SEMENTE');
   await captura('22-cliente-catalogo-filtro');
@@ -251,15 +251,17 @@ async function main() {
   await captura('33-telemovel-carrinho', { inteira: false });
 
   // ------------------------------------------------------------- modo escuro
+  // O sistema continua em claro: o modo escuro é escolhido no selector de tema
   await largura(1280);
-  await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'dark' }] });
   await ir('/catalogo');
+  await captura('39-tema-selector', { inteira: false });
+  await clicar('button[name=modo][value=escuro]');
   await captura('40-escuro-catalogo', { inteira: false });
   await ir(url);
   await captura('41-escuro-factura', { inteira: false });
   await sair();
   await ir('/login');
-  await preencher({ 'input[name=email]': 'admin@agro.mz', 'input[name=password]': 'admin234' }, 'button[type=submit]');
+  await preencher({ 'input[name=email]': 'admin@agro.mz', 'input[name=password]': 'admin234' }, 'main button[type=submit]');
   await captura('42-escuro-admin-painel', { inteira: false });
   await ir('/admin/produtos');
   await captura('43-escuro-admin-produtos', { inteira: false });
@@ -269,8 +271,8 @@ async function main() {
 
   // ---------------------------------------- defensive CSS: dados extremos
   await largura(1280);
-  await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: 'light' }] });
   await ir('/admin/produtos');
+  await clicar('button[name=modo][value=sistema]');
   const fid1 = await js(`document.querySelector('select[name=fornecedorId] option:nth-child(2)').value`);
   await preencher({ 'input[name=nome]': 'Fertilizante' + 'Super'.repeat(10) + 'Concentrado', 'select[name=categoria]': 'FERTILIZANTE',
     'select[name=fornecedorId]': fid1, 'input[name=preco]': '99999.99', 'input[name=quantidade]': '3',

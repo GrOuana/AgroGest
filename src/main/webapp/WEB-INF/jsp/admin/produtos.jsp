@@ -121,11 +121,11 @@
       <div class="form__field form__field--wide">
         <label class="form__label" for="campo-fotoUrl">Foto (URL)<span class="form__optional">(opcional)</span></label>
         <input class="form__input ${ec == 'fotoUrl' ? 'form__input--invalid' : ''}" id="campo-fotoUrl" type="text" name="fotoUrl"
-               maxlength="500" placeholder="img/produtos/feijao.svg"
+               maxlength="500" placeholder="img/produtos/feijao.jpg"
                pattern="^(https?:\/\/\S+|img\/[\w.\/\-]+)$" title="Endereço https://… ou caminho img/… da aplicação"
                aria-invalid="${ec == 'fotoUrl'}" aria-describedby="ajuda-fotoUrl${ec == 'fotoUrl' ? ' erro-fotoUrl' : ''}"
                value="${fn:escapeXml(vFoto)}">
-        <p class="form__hint" id="ajuda-fotoUrl">Endereço https://… ou uma imagem da aplicação, como img/produtos/feijao.svg.</p>
+        <p class="form__hint" id="ajuda-fotoUrl">Endereço https://… ou uma imagem da aplicação, como img/produtos/feijao.jpg.</p>
         <c:set var="campo" value="fotoUrl"/><%@ include file="/WEB-INF/jsp/comum/erro-campo.jspf" %>
       </div>
     </div>

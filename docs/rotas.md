@@ -12,6 +12,8 @@ Perfis: **público** = sem sessão · **sessão** = qualquer utilizador autentic
 | `/login` | GET, POST | `LoginServlet` | `login.jsp` | público | `erro` |
 | `/logout` | POST (GET também) | `LogoutServlet` | — (redirect para `/login`) | público | — |
 | `/registo` | GET, POST | `RegistoServlet` | `registo-cliente.jsp` | público | `erro`, `erroCampo` |
+| `/tema` | POST `modo=claro\|escuro\|sistema`, `voltar` | `TemaServlet` | — (grava o cookie `agrogest_tema` e volta a `voltar`, se for um caminho interno) | público | — |
+| `/creditos` | GET | `CreditosServlet` | `creditos.jsp` | público | — |
 | `/catalogo?categoria=SEMENTE` | GET | `CatalogoServlet` | `cliente/catalogo.jsp` | sessão | `produtos`, `categorias`, `categoriaActual`, `noCarrinho` |
 | `/carrinho` | GET | `CarrinhoServlet` | `cliente/carrinho.jsp` | cliente | `resumo` (`ResumoCarrinho`) |
 | `/carrinho/adicionar` | POST `produtoId`, `quantidade`, `categoria` | `CarrinhoServlet` | — (redirect para o catálogo) | cliente | — |
@@ -63,6 +65,12 @@ Perfis: **público** = sem sessão · **sessão** = qualquer utilizador autentic
 |---|---|---|
 | `erro` | `String` | Mensagem de validação ou regra de negócio, mostrada no topo da página |
 | `erroCampo` | `String` | Nome do campo que falhou (ex.: `telefone`). A JSP marca-o com `aria-invalid` e mostra a mensagem junto dele |
+
+## Cookie
+
+| Nome | Valores | Uso |
+|---|---|---|
+| `agrogest_tema` | `claro`, `escuro` (sem cookie = seguir o sistema) | Lido pelo `prelude.jspf`, que põe `data-theme="light\|dark\|auto"` no `<html>`. Dura 1 ano; HttpOnly; SameSite=Lax. Valores desconhecidos são ignorados |
 
 ## Atributos de sessão
 

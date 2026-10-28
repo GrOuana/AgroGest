@@ -1,11 +1,11 @@
 <%-- Cabeçalho comum. Antes de incluir, a página define ${titulo} e ${menu}.
      Administrador: grelha .app com barra lateral. Cliente e visitante: .topbar. --%>
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="${tema}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="${tema == 'dark' ? 'dark' : (tema == 'light' ? 'light' : 'light dark')}">
   <title><c:out value="${titulo}"/> · AgroGest</title>
   <link rel="icon" href="${ctx}/img/logo.svg" type="image/svg+xml">
   <link rel="preload" href="${ctx}/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -81,6 +81,8 @@
     </nav>
 
     <div class="sidebar__footer">
+      <c:set var="temaClasse" value="theme-switch--dark-surface"/>
+      <%@ include file="/WEB-INF/jsp/comum/tema.jspf" %>
       <p class="sidebar__user">
         <span class="sidebar__user-name" title="${fn:escapeXml(u.email)}"><c:out value="${u.nome}"/></span>
         <span class="sidebar__user-role">${u.perfil.descricao}</span>
@@ -131,6 +133,8 @@
           <a class="topbar__link ${menu == 'registo' ? 'topbar__link--active' : ''}" href="${ctx}/registo" ${menu == 'registo' ? 'aria-current="page"' : ''}>Criar conta</a>
         </c:otherwise>
       </c:choose>
+      <c:set var="temaClasse" value="topbar__theme"/>
+      <%@ include file="/WEB-INF/jsp/comum/tema.jspf" %>
     </nav>
   </div>
 </header>

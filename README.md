@@ -191,8 +191,9 @@ src/main/webapp/
   WEB-INF/jsp/             todas as JSP, só alcançáveis por forward
      comum/ admin/ cliente/ erro/
   css/global.css           folha de estilos própria: tokens, modo escuro, BEM, responsiva
-  fonts/                   Inter (SIL OFL), servida localmente — funciona sem internet
-  img/                     logótipo e fotografias dos produtos (SVG)
+  fonts/                   Inter, servida localmente — funciona sem internet
+  licencas/                textos das licenças da fonte (OFL) e do ícone (CC-BY)
+  img/                     logótipo (Twemoji 🌱) e fotografias reais dos produtos (Wikimedia Commons)
 ```
 
 ### Regras que mantêm o MVC limpo
@@ -303,7 +304,16 @@ O mesmo ecrã permite **eliminar o ficheiro** e **repor os dados de demonstraç�
 A folha de estilos é escrita de raiz, sem Bootstrap, Tailwind ou qualquer framework, e organiza-se assim:
 
 - **Design tokens no `:root`.** Cores (verde esmeralda `--color-primary` para as acções e neutros para o resto), tipografia (Inter, escala `--text-*`), espaçamento (escala de 4 px), raios, sombras e tempos de transição. Nenhuma cor está escrita directamente num componente.
-- **Modo escuro nativo** com `@media (prefers-color-scheme: dark)`: só os tokens mudam, os componentes ficam iguais.
+- **Modo claro, escuro ou automático**, à escolha do utilizador:
+  - **Onde está:** um selector ☀ / ☾ / 🖥 na barra superior (cliente) e no fundo da barra lateral (administrador).
+  - **Sem JavaScript:** os três botões fazem POST para `/tema` (`TemaServlet`), que guarda a escolha num cookie de um ano (`agrogest_tema`, HttpOnly, SameSite=Lax) e volta à mesma página, mas só se for um caminho interno.
+  - **Na página:** a JSP marca `<html data-theme="light|dark|auto">`.
+  - **No CSS:** `auto` (por omissão) segue o sistema operativo com `@media (prefers-color-scheme: dark)`, e `light`/`dark` forçam o tema. Só os tokens mudam, os componentes ficam iguais.
+- **Imagens reais**, guardadas no WAR, para funcionarem sem internet:
+  - fotografias dos produtos do Wikimedia Commons, com licenças livres (CC BY / CC BY-SA);
+  - o ícone 🌱 do Twemoji (CC-BY 4.0) no logótipo.
+
+  Autores e licenças: página `/creditos` (ligada no rodapé) e [`docs/creditos-imagens.md`](docs/creditos-imagens.md). A AgroGest é fictícia e não tem logótipo próprio, por isso usa-se um ícone livre e não a marca de outra empresa.
 - **BEM** (`bloco__elemento--modificador`) em todas as classes, por exemplo `.product-card__price` e `.btn--primary`. Não há selectores encadeados que dependam da estrutura do HTML.
 - **Layouts:**
   - o administrador usa **CSS Grid** (`.app`: barra lateral + conteúdo), que no telemóvel passa a uma faixa de navegação horizontal;
@@ -367,11 +377,13 @@ Com a aplicação acabada de arrancar, ou depois de **Repor dados de demonstraç
 bash scripts/testar.sh
 ```
 
-São 70 verificações automáticas com `curl`:
+São 80 verificações automáticas com `curl`:
 - controlo de acesso (403 e redirecionamento para o login);
 - percurso completo do administrador e do cliente do enunciado;
 - validações no servidor: telefone, nome com números, email, preço com 3 casas ou com letras, unidade, URL `javascript:`, validade no passado;
 - escape de XSS;
+- selector de tema: cookie, `data-theme`, regresso à página e recusa de redirecionamentos para fora do site;
+- imagens e página de créditos públicas;
 - RN01–RN06;
 - atomicidade (o primeiro item não é descontado quando o segundo falha);
 - concorrência (2 e 20 compras em simultâneo).
@@ -405,3 +417,4 @@ Teste manual de persistência: fazer uma compra → reiniciar o Tomcat (`shutdow
 | [`docs/rotas.md`](docs/rotas.md) | URL → servlet → JSP → perfil exigido |
 | [`docs/convencoes.md`](docs/convencoes.md) | Pacotes, nomes, ramos Git e mensagens de commit |
 | [`docs/testes.md`](docs/testes.md) | Casos de teste das regras de negócio e validações |
+| [`docs/creditos-imagens.md`](docs/creditos-imagens.md) | Autores e licenças das fotografias, do ícone do logótipo e da fonte |

@@ -1,0 +1,33 @@
+<%-- Selector de tema: três botões que enviam a escolha ao TemaServlet (sem JavaScript).
+     ${voltar} é a página actual, para regressar a ela depois da escolha. --%>
+<c:choose>
+  <c:when test="${not empty requestScope['jakarta.servlet.error.request_uri']}">
+    <c:set var="voltarUri" value="${ctx}/"/><c:set var="voltarQs" value=""/>
+  </c:when>
+  <c:when test="${not empty requestScope['jakarta.servlet.forward.request_uri']}">
+    <c:set var="voltarUri" value="${requestScope['jakarta.servlet.forward.request_uri']}"/>
+    <c:set var="voltarQs" value="${requestScope['jakarta.servlet.forward.query_string']}"/>
+  </c:when>
+  <c:otherwise>
+    <c:set var="voltarUri" value="${pageContext.request.requestURI}"/>
+    <c:set var="voltarQs" value="${pageContext.request.queryString}"/>
+  </c:otherwise>
+</c:choose>
+<form method="post" action="${ctx}/tema" class="theme-switch ${temaClasse}" aria-label="Tema da interface">
+  <input type="hidden" name="voltar" value="${fn:escapeXml(voltarUri)}${empty voltarQs ? '' : '?'}${fn:escapeXml(voltarQs)}">
+  <button type="submit" name="modo" value="claro" class="theme-switch__option ${tema == 'light' ? 'theme-switch__option--active' : ''}"
+          aria-pressed="${tema == 'light'}" title="Modo claro">
+    <svg class="theme-switch__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <span class="visually-hidden">Modo claro</span>
+  </button>
+  <button type="submit" name="modo" value="escuro" class="theme-switch__option ${tema == 'dark' ? 'theme-switch__option--active' : ''}"
+          aria-pressed="${tema == 'dark'}" title="Modo escuro">
+    <svg class="theme-switch__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    <span class="visually-hidden">Modo escuro</span>
+  </button>
+  <button type="submit" name="modo" value="sistema" class="theme-switch__option ${tema == 'auto' ? 'theme-switch__option--active' : ''}"
+          aria-pressed="${tema == 'auto'}" title="Seguir o tema do sistema">
+    <svg class="theme-switch__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+    <span class="visually-hidden">Seguir o tema do sistema</span>
+  </button>
+</form>

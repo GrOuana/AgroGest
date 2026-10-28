@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
-  <rect width="400" height="300" fill="#e6f2e7"/>
-  <path d="M200 210V130" stroke="#2f7a3d" stroke-width="8" stroke-linecap="round"/>
-  <path d="M200 160c-26 0-44-18-46-44 26 0 44 18 46 44z" fill="#2f7a3d"/>
-  <path d="M200 145c26 0 44-18 46-44-26 0-44 18-46 44z" fill="#3f9a50"/>
-  <path d="M130 215c22-10 46-14 70-14s48 4 70 14" stroke="#8a5a2b" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <text x="200" y="258" font-family="Arial, sans-serif" font-size="18" fill="#5b6b5f" text-anchor="middle">Sem fotografia</text>
-</svg>

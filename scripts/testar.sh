@@ -22,6 +22,22 @@ chk "anónimo /catalogo → redirect login" '[ "$(curl -s -o /dev/null -w "%{red
 chk "anónimo /minhas-compras → redirect login" '[ "$(curl -s -o /dev/null -w "%{redirect_url}" $B/minhas-compras)" = "$B/login" ]'
 chk "JSP directa inacessível (404)" '[ "$(code $B/WEB-INF/jsp/admin/dashboard.jsp)" = 404 ]'
 chk "CSS e fonte Inter públicos" '[ "$(code $B/css/global.css)" = 200 ] && [ "$(code $B/fonts/inter-latin-wght-normal.woff2)" = 200 ]'
+chk "fotos dos produtos e logótipo públicos" '[ "$(code $B/img/produtos/milho.jpg)" = 200 ] && [ "$(code $B/img/produtos/sem-foto.jpg)" = 200 ] && [ "$(code $B/img/logo.svg)" = 200 ]'
+chk "página de créditos das imagens pública" '[ "$(code $B/creditos)" = 200 ] && curl -s $B/creditos | grep -q "CC BY-SA 3.0"'
+
+echo "== Selector de tema"
+chk "sem escolha: data-theme=auto" 'curl -s $B/login | grep -q "data-theme=\"auto\""'
+r=$(post tm /tema -d modo=escuro -d voltar=%2Fagrogest%2Fregisto)
+chk "escolher escuro → volta à página de origem" '[[ "$r" == *"/agrogest/registo" ]]'
+chk "escolha guardada em cookie (HttpOnly)" 'grep -q "agrogest_tema.*escuro" $T/tm && grep -q "#HttpOnly_" $T/tm'
+chk "página passa a data-theme=dark e o botão fica activo" 'get tm $B/login | grep -q "data-theme=\"dark\"" && get tm $B/login | grep -q "value=\"escuro\" class=\"theme-switch__option theme-switch__option--active\""'
+r=$(post tm /tema -d modo=claro -d voltar=%2Fagrogest%2Flogin)
+chk "escolher claro → data-theme=light" 'get tm $B/login | grep -q "data-theme=\"light\""'
+r=$(post tm /tema -d modo=sistema -d voltar=%2Fagrogest%2Flogin)
+chk "voltar ao sistema apaga a escolha" 'get tm $B/login | grep -q "data-theme=\"auto\""'
+r=$(post tm2 /tema -d modo=escuro -d "voltar=https://exemplo.com/roubo")
+chk "voltar para outro site é recusado (vai para a raiz)" '[[ "$r" == *" $B/" ]]'
+chk "cookie com valor inventado é ignorado" 'curl -s -b "agrogest_tema=<script>" $B/login | grep -q "data-theme=\"auto\""'
 
 echo "== Administrador"
 r=$(post adm /login --data-urlencode "email=admin@agro.mz" --data-urlencode "password=errada")
@@ -38,7 +54,7 @@ chk "fornecedor Sementes do Sul criado (acentos/vírgula)" 'grep -q "Sementes do
 
 # O novo fornecedor «Sementes do Sul» fica com o id 4 (os de demonstração são 1–3)
 VAL=$(date -d "+8 months" +%Y-%m-%d)
-post adm /admin/produtos -d accao=criar -d "nome=Semente%20Feij%C3%A3o%20nhemba" -d categoria=SEMENTE -d fornecedorId=4 -d preco=320 -d quantidade=400 -d unidade=kg -d validade=$VAL -d fotoUrl=img/produtos/feijao.svg -d "descricao=Feij%C3%A3o%20nhemba" >/dev/null
+post adm /admin/produtos -d accao=criar -d "nome=Semente%20Feij%C3%A3o%20nhemba" -d categoria=SEMENTE -d fornecedorId=4 -d preco=320 -d quantidade=400 -d unidade=kg -d validade=$VAL -d fotoUrl=img/produtos/feijao.jpg -d "descricao=Feij%C3%A3o%20nhemba" >/dev/null
 get adm $B/admin/produtos > $T/p.html
 chk "produto Feijão nhemba criado" 'grep -q "Semente Feijão nhemba" $T/p.html'
 
@@ -112,7 +128,7 @@ chk "registo do João → catálogo" '[[ "$r" == *"/catalogo" ]]'
 r=$(post dup /registo -d nome=Outro -d email=JOAO@teste.mz -d password=1234 -d confirmacao=1234 -d telefone=841110000 -d "endereco=Rua%20Teste%2C%20Nampula")
 chk "email repetido recusado (maiúsculas)" 'grep -q "Já existe uma conta" $T/ultima.html'
 get jo $B/catalogo > $T/cat.html
-chk "catálogo mostra Feijão nhemba e fotos" 'grep -q "Semente Feijão nhemba" $T/cat.html && grep -q "img/produtos/milho.svg" $T/cat.html'
+chk "catálogo mostra Feijão nhemba e fotos" 'grep -q "Semente Feijão nhemba" $T/cat.html && grep -q "img/produtos/milho.jpg" $T/cat.html'
 get jo "$B/catalogo?categoria=FERTILIZANTE" > $T/cat2.html
 chk "filtro por categoria" 'grep -q "Adubo NPK" $T/cat2.html && ! grep -q "Semente de Milho" $T/cat2.html'
 chk "cliente /admin/dashboard → 403" '[ "$(code -b $T/jo $B/admin/dashboard)" = 403 ]'
@@ -150,7 +166,7 @@ login ma maria@teste.mz 1234
 post ma /carrinho/adicionar -d produtoId=1 -d quantidade=2 >/dev/null
 post ma /carrinho/adicionar -d produtoId=3 -d quantidade=2 >/dev/null
 # Admin baixa o stock da enxada para 1 depois de a Maria pôr 2 no carrinho
-post adm /admin/produtos -d accao=actualizar -d id=3 -d nome="Enxada de cabo longo" -d categoria=FERRAMENTA -d fornecedorId=3 -d preco=450 -d quantidade=1 -d unidade=unidade -d fotoUrl=img/produtos/enxada.svg >/dev/null
+post adm /admin/produtos -d accao=actualizar -d id=3 -d nome="Enxada de cabo longo" -d categoria=FERRAMENTA -d fornecedorId=3 -d preco=450 -d quantidade=1 -d unidade=unidade -d fotoUrl=img/produtos/enxada.jpg >/dev/null
 r=$(post ma /compra)
 get ma $B/carrinho > $T/ma.html
 chk "compra recusada com aviso de indisponibilidade" 'grep -q "Nenhum stock foi descontado" $T/ma.html'

@@ -1,6 +1,6 @@
 # Casos de teste
 
-Os casos marcados com ✔ são verificados automaticamente por `bash scripts/testar.sh`. A última execução, a 28/10/2026, deu **70 OK, 0 falhas**.
+Os casos marcados com ✔ são verificados automaticamente por `bash scripts/testar.sh`. A última execução, a 28/10/2026, deu **80 OK, 0 falhas**.
 
 Para testar à mão: arrancar com os dados de demonstração (ou **Persistência → Repor dados de demonstração**) e usar `admin@agro.mz / admin234` e os clientes `…@teste.mz / 1234`.
 
@@ -56,6 +56,18 @@ Para testar à mão: arrancar com os dados de demonstração (ou **Persistência
 | Número da primeira factura da demonstração | **FT-2026-1** | ✔ |
 | Acentos em formulários | "José Maçã" guardado e mostrado correctamente (UTF-8) | ✔ manual |
 | JSP por URL directo (`/WEB-INF/jsp/admin/dashboard.jsp`) | 404 | ✔ |
+
+## Interface: tema e imagens
+
+| Caso | Resultado esperado | Auto |
+|---|---|---|
+| Primeira visita, sem escolha | `<html data-theme="auto">`: segue o tema do sistema operativo | ✔ |
+| Clicar ☾ (escuro) numa página | Volta à mesma página, já em `data-theme="dark"`; cookie `agrogest_tema=escuro` HttpOnly; o botão fica activo (`aria-pressed="true"`) | ✔ |
+| Clicar ☀ (claro) com o sistema em escuro | `data-theme="light"`: claro, mesmo com o sistema em escuro | ✔ |
+| Clicar 🖥 (sistema) | Apaga o cookie; volta a `data-theme="auto"` | ✔ |
+| `voltar=https://exemplo.com/…` (tentativa de redirecionamento aberto) | Ignorado: vai para a raiz da aplicação | ✔ |
+| Cookie com valor inventado (`<script>`) | Ignorado: `data-theme="auto"` | ✔ |
+| Fotografias, logótipo e página `/creditos` | Servidos pela aplicação (funcionam sem internet); `/creditos` lista autores e licenças | ✔ |
 
 ## Persistência e falhas
 

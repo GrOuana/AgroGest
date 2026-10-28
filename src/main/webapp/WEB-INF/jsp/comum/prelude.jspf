@@ -3,3 +3,7 @@
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="f" uri="http://agrogest.co.mz/funcoes" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%-- Tema escolhido (cookie gravado pelo TemaServlet). Só aceita os dois valores
+     conhecidos; qualquer outro valor equivale a "seguir o sistema". --%>
+<c:set var="temaCookie" value="${cookie['agrogest_tema'].value}"/>
+<c:set var="tema" value="${temaCookie == 'escuro' ? 'dark' : (temaCookie == 'claro' ? 'light' : 'auto')}"/>

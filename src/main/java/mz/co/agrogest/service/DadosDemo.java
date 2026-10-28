@@ -44,15 +44,15 @@ public class DadosDemo {
         Produto milho = s.catalogo().criarProduto("Semente de Milho Matuba", Categoria.SEMENTE,
                 agroSementes.getId(), new BigDecimal("85.00"), 500, "kg",
                 "Semente certificada de milho de polinização aberta, adaptada ao clima de Nampula.",
-                "img/produtos/milho.svg", hoje.plusMonths(10));
+                "img/produtos/milho.jpg", hoje.plusMonths(10));
         Produto adubo = s.catalogo().criarProduto("Adubo NPK 12-24-12", Categoria.FERTILIZANTE,
                 fertiMoz.getId(), new BigDecimal("1850.00"), 120, "saco",
                 "Saco de 50 kg. Adubo de fundo para milho, feijão e hortícolas.",
-                "img/produtos/adubo.svg", hoje.plusMonths(18));
+                "img/produtos/adubo.jpg", hoje.plusMonths(18));
         Produto enxada = s.catalogo().criarProduto("Enxada de cabo longo", Categoria.FERRAMENTA,
                 maquiAgro.getId(), new BigDecimal("450.00"), 60, "unidade",
                 "Lâmina de aço forjado com cabo de madeira de 1,2 m.",
-                "img/produtos/enxada.svg", null);
+                "img/produtos/enxada.jpg", null);
 
         Utilizador maria = cliente("Maria Nhantumbo", "maria@teste.mz", "841112233",
                 "Bairro Muahivire, Nampula");

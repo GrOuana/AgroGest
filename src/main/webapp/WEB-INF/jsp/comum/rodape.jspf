@@ -1,6 +1,6 @@
 </main>
 <footer class="site-footer">
-  <p>AgroGest — Sistema de Gestão Agrícola · Nampula · Sistemas Distribuídos 2026</p>
+  <p>AgroGest — Sistema de Gestão Agrícola · Nampula · Sistemas Distribuídos 2026 · <a class="site-footer__link" href="${ctx}/creditos">Créditos das imagens</a></p>
 </footer>
 <c:if test="${u.admin}">
   </div><%-- .app__main --%>
